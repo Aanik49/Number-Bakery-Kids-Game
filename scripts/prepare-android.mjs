@@ -26,10 +26,14 @@ if (fs.existsSync(manifestPath)) {
 
   for (const perm of permissionsToAdd) {
     if (!manifest.includes(perm)) {
-      manifest = manifest.replace(
-        '<uses-permission android:name="android.permission.INTERNET" />',
-        `<uses-permission android:name="android.permission.INTERNET" />\n    ${perm}`
-      );
+      if (manifest.includes('<uses-permission android:name="android.permission.INTERNET" />')) {
+        manifest = manifest.replace(
+          '<uses-permission android:name="android.permission.INTERNET" />',
+          `<uses-permission android:name="android.permission.INTERNET" />\n    ${perm}`
+        );
+      } else {
+        manifest = manifest.replace('</manifest>', `    ${perm}\n</manifest>`);
+      }
     }
   }
 
@@ -76,8 +80,13 @@ if (fs.existsSync(svgIconPath) && fs.existsSync(resDir)) {
   for (const { folder, size } of mipmapSizes) {
     const dir = path.join(resDir, folder);
     fs.mkdirSync(dir, { recursive: true });
-    for (const fileName of ['ic_launcher.png', 'ic_launcher_round.png', 'ic_launcher_foreground.png']) {
-      const target = path.join(dir, fileName);
+    for (const baseName of ['ic_launcher', 'ic_launcher_round', 'ic_launcher_foreground']) {
+      // Remove any conflicting .webp icon to prevent Gradle duplicate resource errors
+      const webpPath = path.join(dir, `${baseName}.webp`);
+      if (fs.existsSync(webpPath)) {
+        fs.unlinkSync(webpPath);
+      }
+      const target = path.join(dir, `${baseName}.png`);
       if (tryRenderSvgToPng(svgIconPath, target, size)) {
         convertedCount++;
       }

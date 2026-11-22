@@ -31,7 +31,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
       - name: Setup Java 21
         uses: actions/setup-java@v4
@@ -42,11 +41,21 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Ensure Android SDK 36 & accept licenses
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
       - name: Install icon conversion tool (librsvg2-bin)
-        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
+        run: (sudo apt-get update && sudo apt-get install -y librsvg2-bin) || true
 
       - name: Install npm dependencies
-        run: npm ci || npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --legacy-peer-deps || npm install --no-audit --no-fund --legacy-peer-deps
+          else
+            npm install --no-audit --no-fund --legacy-peer-deps
+          fi
 
       - name: Build web bundle
         run: npm run build
@@ -64,7 +73,7 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon --stacktrace
           mkdir -p ../apk-output
           cp app/build/outputs/apk/debug/app-debug.apk ../apk-output/NumberBakery-debug.apk
 
@@ -81,14 +90,14 @@ jobs:
           mkdir -p ../apk-output
           if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
             echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > app/release-keystore.jks
-            ./gradlew assembleRelease \
+            ./gradlew assembleRelease --no-daemon --stacktrace \
               -Pandroid.injected.signing.store.file="$(pwd)/app/release-keystore.jks" \
               -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
               -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
               -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
             cp app/build/outputs/apk/release/app-release.apk ../apk-output/NumberBakery-release-signed.apk
           else
-            ./gradlew assembleRelease
+            ./gradlew assembleRelease --no-daemon --stacktrace
             cp app/build/outputs/apk/release/app-release-unsigned.apk ../apk-output/NumberBakery-release-unsigned.apk
           fi
 
@@ -97,6 +106,7 @@ jobs:
         with:
           name: number-bakery-android-apk
           path: apk-output/*.apk
+          if-no-files-found: error
           retention-days: 30
 
       - name: Publish APK to GitHub Release (on v* tag)
