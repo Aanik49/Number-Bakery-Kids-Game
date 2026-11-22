@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids' Mobile Game — Level Complete Celebration Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka (playful rounded display) & Plus Jakarta Sans (clean UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F4F6FB;
+            background-image: radial-gradient(#CBD5E1 1.1px, transparent 1.1px);
+            background-size: 22px 22px;
+        }
+        /* Realistic Sleek Mobile Bezel */
+        .phone-chassis {
+            box-shadow:
+                0 25px 50px -12px rgba(15, 23, 42, 0.25),
+                0 0 0 10px #1E293B,
+                0 0 0 13px #475569,
+                inset 0 0 12px rgba(0, 0, 0, 0.35);
+        }
+        .style-pill.active {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            color: #FFFFFF;
+            border-color: transparent;
+            box-shadow: 0 8px 18px -4px rgba(79, 70, 229, 0.38);
+        }
+    </style>
+</head>
+<body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Header Bar -->
+    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-orange-200 shrink-0">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-display font-bold text-lg sm:text-xl text-slate-900 tracking-tight">Level Complete Celebration Studio</h1>
+                        <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700">Kids' Mobile UX</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Tap inside the mobile screen or hit burst to test tactile reward feedback &amp; procedural audio.</p>
+                </div>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="flex items-center gap-2 sm:gap-2.5">
+                <button id="replayBtn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white shadow-sm shadow-emerald-200 transition cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Replay Celebration
+                </button>
+
+                <button id="burstBtn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-400 hover:bg-amber-500 active:scale-95 text-slate-900 shadow-sm shadow-amber-200 transition cursor-pointer">
+                    <span>🎉</span> Particle Burst
+                </button>
+
+                <button id="audioToggleBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 hover:bg-slate-900 active:scale-95 text-white shadow-sm transition cursor-pointer" title="Toggle Web Audio SFX">
+                    <svg id="soundOnIcon" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    <svg id="soundOffIcon" class="w-4 h-4 text-rose-400 hidden" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+                    <span id="audioLabel">SFX On</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main 3-Column Studio Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+            <!-- Left Column: 8 Celebration Style Switcher -->
+            <section class="lg:col-span-4 space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h2 class="font-display font-bold text-base uppercase tracking-wider text-slate-500">Select Celebration Style</h2>
+                    <span class="text-xs font-semibold text-indigo-600">8 Presets</span>
+                </div>
+                <div id="styleSelectorList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
+                    <!-- Dynamically populated style selector pills -->
+                </div>
+            </section>
+
+            <!-- Center Column: Sleek 9:16 Portrait Mobile Viewport -->
+            <section class="lg:col-span-4 flex flex-col items-center justify-center">
+                <div class="relative w-full max-w-[330px] aspect-[9/16] rounded-[42px] bg-slate-900 phone-chassis overflow-hidden select-none">
+                    <!-- Top Dynamic Notch / Speaker Pill -->
+                    <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-5 bg-slate-950 rounded-full z-20 flex items-center justify-between px-3 pointer-events-none">
+                        <span class="w-2 h-2 rounded-full bg-slate-800"></span>
+                        <span class="w-8 h-1 rounded-full bg-slate-800"></span>
+                    </div>
+
+                    <!-- Interactive HTML5 Game Celebration Canvas -->
+                    <canvas id="celebrationCanvas" class="w-full h-full block cursor-pointer"></canvas>
+
+                    <!-- Kid-Friendly Icon-Only Bottom Navigation Dock (Huge Tap Targets, Zero Clutter) -->
+                    <div class="absolute bottom-5 inset-x-4 z-20 flex items-center justify-center gap-3.5 pointer-events-auto">
+                        <!-- Home Icon Button -->
+                        <button id="phoneHomeBtn" aria-label="Home" title="Home"
+                            class="w-13 h-13 p-3.5 rounded-2xl bg-white/95 hover:bg-white active:scale-90 text-slate-700 shadow-lg border-b-4 border-slate-300 transition flex items-center justify-center cursor-pointer">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        </button>
+
+                        <!-- Primary Hero Next Level Button (Large Chunky Icon Target) -->
+                        <button id="phoneNextBtn" aria-label="Next Level" title="Next Level"
+                            class="w-20 h-16 rounded-3xl bg-gradient-to-b from-emerald-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-500 active:scale-90 text-white shadow-xl shadow-emerald-950/30 border-b-4 border-emerald-700 transition flex items-center justify-center cursor-pointer">
+                            <svg class="w-9 h-9 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+
+                        <!-- Replay Icon Button -->
+                        <button id="phoneReplayBtn" aria-label="Replay" title="Replay"
+                            class="w-13 h-13 p-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-90 text-slate-900 shadow-lg border-b-4 border-amber-600 transition flex items-center justify-center cursor-pointer">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Bottom Home Indicator Bar -->
+                    <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-28 h-1 rounded-full bg-white/50 z-20 pointer-events-none"></div>
+                </div>
+
+                <!-- Micro Interaction Hint -->
+                <p class="mt-4 text-xs font-medium text-slate-500 flex items-center gap-1.5">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    Tap anywhere on the phone screen for interactive toys &amp; bursts!
+                </p>
+            </section>
+
+            <!-- Right Column: Game Feel & Kid-UX Breakdown -->
+            <section class="lg:col-span-4 space-y-4">
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-5">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <span id="detailBadge" class="inline-block px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs uppercase tracking-wider mb-1.5">Classic Casual</span>
+                            <h2 id="detailTitle" class="font-display font-bold text-2xl text-slate-900 leading-tight">Star Cascade &amp; Ribbon Pop</h2>
+                        </div>
+                        <span id="detailEmoji" class="text-3xl bg-slate-50 w-12 h-12 rounded-2xl flex items-center justify-center border border-slate-100 shrink-0">⭐</span>
+                    </div>
+
+                    <p id="detailSummary" class="text-sm text-slate-600 leading-relaxed"></p>
+
+                    <!-- Timeline / Choreography Breakdown -->
+                    <div class="space-y-3 pt-1">
+                        <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/70">
+                            <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider mb-1">
+                                <span>⏱️</span> Timing Curve &amp; Overshoot
+                            </div>
+                            <p id="detailTiming" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200/70">
+                            <div class="flex items-center gap-2 text-indigo-800 font-bold text-xs uppercase tracking-wider mb-1">
+                                <span>🎵</span> Procedural Audio Layering
+                            </div>
+                            <p id="detailAudio" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/70">
+                            <div class="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-wider mb-1">
+                                <span>👶</span> Kid-UX &amp; Tap Affordance
+                            </div>
+                            <p id="detailKidUx" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        /**
+         * ============================================================================
+         * WEB AUDIO API PROCEDURAL SOUND ENGINE (ZERO EXTERNAL ASSETS)
+         * ============================================================================
+         * Synthesizes warm marimba/xylophone arpeggios, ascending star chimes,
+         * bubbly pops, whooshes, and celebratory fanfares tailored for kids' games.
+         */
+        class KidSoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            ensureContext() {
+                if (!this.enabled) return null;
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume().catch(() => {});
+                }
+                return this.ctx;
+            }
+
+            playTone(freq, type = 'sine', duration = 0.28, delay = 0, volume = 0.16, slideTo = null) {
+                const ctx = this.ensureContext();
+                if (!ctx) return;
+                const now = ctx.currentTime + delay;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                if (slideTo) {
+                    osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+                }
+
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.linearRampToValueAtTime(volume, now + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration + 0.02);
+            }
+
+            playStarDing(starIndex = 0) {
+                // Ascending major pentatonic marimba/bell notes: C5, E5, G5, C6
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                const freq = notes[starIndex % notes.length];
+                this.playTone(freq, 'triangle', 0.42, 0, 0.2);
+                this.playTone(freq * 2, 'sine', 0.25, 0.01, 0.08);
+            }
+
+            playPop(pitchMult = 1) {
+                const base = (320 + Math.random() * 140) * pitchMult;
+                this.playTone(base, 'sine', 0.12, 0, 0.18, base * 1.9);
+            }
+
+            playWhoosh() {
+                this.playTone(180, 'sine', 0.28, 0, 0.12, 540);
+            }
+
+            playFanfare(styleId) {
+                if (!this.enabled) return;
+                // Distinct musical motif per celebration theme
+                if (styleId === 'rocket-space') {
+                    // Sci-fi synth arpeggio
+                    [392.0, 493.88, 587.33, 783.99, 987.77].forEach((f, i) => {
+                        this.playTone(f, 'triangle', 0.35, i * 0.075, 0.14);
+                    });
+                } else if (styleId === 'treasure-chest') {
+                    // Underwater marimba + bubbles
+                    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+                        this.playTone(f, 'sine', 0.35, i * 0.09, 0.18);
+                    });
+                    setTimeout(() => this.playPop(1.2), 280);
+                    setTimeout(() => this.playPop(1.5), 390);
+                } else {
+                    // Warm upbeat xylophone victory chord progression
+                    const chord = [523.25, 659.25, 783.99, 1046.50];
+                    chord.forEach((f, i) => {
+                        this.playTone(f, 'triangle', 0.38, i * 0.08, 0.16);
+                    });
+                }
+            }
+        }
+
+        const sfx = new KidSoundEngine();
+
+        // ============================================================================
+        // 8 KID-FOCUSED LEVEL COMPLETION CELEBRATION DEFINITIONS
+        // ============================================================================
+        const CELEBRATIONS = [
+            {
+                id: 'star-cascade',
+                number: '01',
+                name: 'Star Cascade & Ribbon Pop',
+                tag: 'Classic Casual',
+                emoji: '⭐',
+                bgGrad: ['#38BDF8', '#2563EB'],
+                summary: 'A joyful 3-star sequential drop with elastic squash-and-stretch, rotating golden sunburst rays, an unfurling crimson victory ribbon, and fluttering confetti.',
+                timing: 'Staggered 220ms beat intervals per star using an elastic ease-out-back overshoot (1.28x peak scale) so each star lands with a weighty, toy-like bounce.',
+                audio: 'Ascending C-major marimba chimes (C5 → E5 → G5) synced to each star impact, layered with a soft satin whoosh as the ribbon unfurls.',
+                kidUx: 'Immediate, unambiguous 1-to-3 visual progress feedback paired with an oversized central green Play triangle button that requires zero reading.'
+            },
+            {
+                id: 'pinata-burst',
+                number: '02',
+                name: 'Piñata Candy Burst',
+                tag: 'Playful & High Energy',
+                emoji: '🍬',
+                bgGrad: ['#F472B6', '#9333EA'],
+                summary: 'A smiling rainbow star piñata drops onto a string, wobbles playfully, and pops open in an explosion of wrapped candies, jellybeans, and streamers.',
+                timing: 'Anticipation phase (0.0s–0.75s) builds excitement with swinging pendulum physics before a crisp 6-frame freeze-and-pop burst at 0.8s.',
+                audio: 'Playful boing wobbles followed by a celebratory pop and sparkling high-register xylophone glissando as candies shower downward.',
+                kidUx: 'Tapping the piñata before or after it bursts triggers extra wobble impulses and candy showers, rewarding curious little fingers.'
+            },
+            {
+                id: 'rocket-space',
+                number: '03',
+                name: 'Rocket Blast-Off & Planet Hop',
+                tag: 'Space Explorer',
+                emoji: '🚀',
+                bgGrad: ['#1E1B4B', '#312E81'],
+                summary: 'A chunky cartoon rocket touches down on a smiling crescent moon, plants a checkered victory flag, and ignites star-shaped fireworks across the cosmos.',
+                timing: 'Smooth parabolic descent with puffing exhaust clouds (0.0s–0.65s), followed by a springy flag pop and rhythmic firework blooms.',
+                audio: 'Gentle ascending synth whoosh on touchdown, crisp flag-snap pop, and twinkling space-bell harmonics.',
+                kidUx: 'High-contrast luminous pastels against a deep indigo sky ensure effortless visual tracking for younger children.'
+            },
+            {
+                id: 'treasure-chest',
+                number: '04',
+                name: 'Treasure Chest & Bubble Pop',
+                tag: 'Underwater / Pirate',
+                emoji: '💎',
+                bgGrad: ['#06B6D4', '#0F766E'],
+                summary: 'A chunky wooden-and-gold toy treasure chest lands on the sandy ocean floor, springs its lid open with glowing pearls, and releases tappable bubbles.',
+                timing: 'Heavy squash landing at 0.3s, brief 150ms anticipation rattle, and a snappy hinged lid flip at 0.55s releasing buoyant pearls and bubbles.',
+                audio: 'Warm wooden thud, sparkling harp/marimba chord on lid reveal, and pitched water-bubble pops whenever the player taps rising bubbles.',
+                kidUx: 'Interactive rising bubbles act as a mini post-level toy—children can pop every bubble before tapping Next Level.'
+            },
+            {
+                id: 'gumball-machine',
+                number: '05',
+                name: 'Trophy Gumball Machine',
+                tag: 'Tactile Toybox',
+                emoji: '🏆',
+                bgGrad: ['#FB923C', '#E11D48'],
+                summary: 'A retro red toy dispenser cranks its handle, drops a giant golden capsule that cracks open to reveal a bouncing trophy cup and pastel gumballs.',
+                timing: 'Mechanical 360° crank rotation (0.0s–0.5s), capsule chute drop, and an exciting two-halves shell pop revealing the trophy at 0.85s.',
+                audio: 'Clickety-clack ratchet ticks during the crank turn, hollow plastic capsule bounce, and a bright brassy chime on trophy reveal.',
+                kidUx: 'Mimics real-world vending capsule surprise toys, tapping into tactile curiosity and anticipation.'
+            },
+            {
+                id: 'rainbow-slide',
+                number: '06',
+                name: 'Rainbow Slide & Mascot Dance',
+                tag: 'Kawaii / Pastel',
+                emoji: '🌈',
+                bgGrad: ['#FBCFE8', '#C4B5FD'],
+                summary: 'A pastel rainbow arcs between fluffy smiling clouds while a chubby chibi bunny slides down, lands a joyful victory jump, and showers floating hearts.',
+                timing: 'Sweeping radial arc draw (0.0s–0.55s) guides the eye along the mascot’s slide trajectory straight into the center victory pose.',
+                audio: 'Glissando harp sweep matching the rainbow arc, cute squeaky bounce on landing, and soft chime pulses for floating hearts.',
+                kidUx: 'Emotional bonding through an expressive, cheering companion character that celebrates alongside the child.'
+            },
+            {
+                id: 'sticker-stamp',
+                number: '07',
+                name: 'Sticker Stamp & Confetti Pop',
+                tag: 'Paper Craft',
+                emoji: '👑',
+                bgGrad: ['#FDE68A', '#F59E0B'],
+                summary: 'A tactile cream craft card unfolds while glossy die-cut vinyl stickers—3 shiny stars, a golden crown, and a happy badge—slap onto the page.',
+                timing: 'Punchy, zero-lag slap impacts at 0.25s, 0.45s, 0.65s, and 0.9s with subtle 3px camera shake and peeled-edge shadow settle.',
+                audio: 'Crisp tactile vinyl slap/thump sounds paired with ascending marimba notes for each sticker stamped onto the card.',
+                kidUx: 'Thick white die-cut sticker borders create bold figure-ground separation and simulate decorating a real sticker book.'
+            },
+            {
+                id: 'balloon-parade',
+                number: '08',
+                name: 'Fireworks & Balloon Parade',
+                tag: 'Carnival / Party',
+                emoji: '🎈',
+                bgGrad: ['#60A5FA', '#4F46E5'],
+                summary: 'Colorful helium balloons float upward lifting a festive pennant banner while cheerful sky fireworks bloom into smiling stars and sparkles.',
+                timing: 'Buoyant sinusoidal upward drift with gentle sway, punctuated by rhythmic firework bursts every 1.1 seconds.',
+                audio: 'Soft helium inflate whoosh, gentle firework whistle-and-pop blooms, and tappable balloon pops anywhere on screen.',
+                kidUx: 'Every floating balloon is an interactive hit-target that pops into confetti with a cheerful musical note on touch.'
+            }
+        ];
+
+        // ============================================================================
+        // ANIMATION STATE & INTERACTIVE PARTICLE ENGINE
+        // ============================================================================
+        const appState = {
+            activeId: 'star-cascade',
+            elapsed: 0,
+            lastTime: performance.now(),
+            particles: [],
+            interactiveToys: [], // Tappable bubbles, balloons, candies
+            shakeTime: 0,
+            starChimesPlayed: [false, false, false, false]
+        };
+
+        function easeOutBack(x) {
+            const c1 = 1.70158;
+            const c3 = c1 + 1;
+            return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+        }
+
+        function easeOutElastic(x) {
+            if (x <= 0) return 0;
+            if (x >= 1) return 1;
+            const c4 = (2 * Math.PI) / 3;
+            return Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
+        }
+
+        function easeOutBounce(x) {
+            const n1 = 7.5625;
+            const d1 = 2.75;
+            if (x < 1 / d1) return n1 * x * x;
+            if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
+            if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
+            return n1 * (x -= 2.625 / d1) * x + 0.984375;
+        }
+
+        function spawnConfettiBurst(nx, ny, count = 26, palette = ['#FACC15', '#F43F5E', '#38BDF8', '#4ADE80', '#A855F7']) {
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.45;
+                const speed = 90 + Math.random() * 210;
+                const shapes = ['star', 'circle', 'ribbon', 'heart'];
+                appState.particles.push({
+                    x: nx,
+                    y: ny,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 95,
+                    size: 5 + Math.random() * 6,
+                    color: palette[i % palette.length],
+                    shape: shapes[i % shapes.length],
+                    rot: Math.random() * Math.PI * 2,
+                    vrot: (Math.random() - 0.5) * 9,
+                    life: 1.0,
+                    decay: 0.55 + Math.random() * 0.35
+                });
+            }
+        }
+
+        function seedInteractiveToys(styleId) {
+            appState.interactiveToys = [];
+            if (styleId === 'treasure-chest') {
+                for (let i = 0; i < 8; i++) {
+                    appState.interactiveToys.push({
+                        type: 'bubble',
+                        x: 0.2 + Math.random() * 0.6,
+                        y: 0.55 + Math.random() * 0.25,
+                        r: 14 + Math.random() * 10,
+                        vy: -0.14 - Math.random() * 0.08,
+                        wobble: Math.random() * Math.PI * 2,
+                        color: '#E0F2FE'
+                    });
+                }
+            } else if (styleId === 'balloon-parade') {
+                const colors = ['#F43F5E', '#FACC15', '#34D399', '#38BDF8', '#C084FC', '#FB923C'];
+                for (let i = 0; i < 7; i++) {
+                    appState.interactiveToys.push({
+                        type: 'balloon',
+                        x: 0.16 + (i % 4) * 0.22 + (Math.random() - 0.5) * 0.06,
+                        y: 0.68 + Math.floor(i / 4) * 0.16,
+                        r: 20,
+                        vy: -0.12 - Math.random() * 0.06,
+                        wobble: i * 1.1,
+                        color: colors[i % colors.length]
+                    });
+                }
+            } else if (styleId === 'pinata-burst' || styleId === 'gumball-machine') {
+                const colors = ['#F43F5E', '#FACC15', '#34D399', '#38BDF8', '#A855F7'];
+                for (let i = 0; i < 8; i++) {
+                    appState.interactiveToys.push({
+                        type: 'candy',
+                        x: 0.2 + Math.random() * 0.6,
+                        y: 0.5 + Math.random() * 0.28,
+                        r: 13,
+                        vy: (Math.random() - 0.5) * 0.05,
+                        wobble: i * 0.9,
+                        color: colors[i % colors.length]
+                    });
+                }
+            }
+        }
+
+        function startCelebration(styleId, playAudio = true) {
+            appState.activeId = styleId;
+            appState.elapsed = 0;
+            appState.particles = [];
+            appState.shakeTime = 0;
+            appState.starChimesPlayed = [false, false, false, false];
+            seedInteractiveToys(styleId);
+            if (playAudio) {
+                sfx.playFanfare(styleId);
+            }
+        }
+
+        // ============================================================================
+        // SHARED VECTOR DRAWING HELPERS
+        // ============================================================================
+        function drawStar(ctx, cx, cy, spikes, outerR, innerR, rot = 0) {
+            ctx.beginPath();
+            for (let i = 0; i < spikes * 2; i++) {
+                const r = i % 2 === 0 ? outerR : innerR;
+                const a = rot + (i * Math.PI) / spikes - Math.PI / 2;
+                const x = cx + Math.cos(a) * r;
+                const y = cy + Math.sin(a) * r;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+        }
+
+        function drawRoundRect(ctx, x, y, w, h, r) {
+            const rad = Math.min(r, w / 2, h / 2);
+            ctx.beginPath();
+            ctx.moveTo(x + rad, y);
+            ctx.arcTo(x + w, y, x + w, y + h, rad);
+            ctx.arcTo(x + w, y + h, x, y + h, rad);
+            ctx.arcTo(x, y + h, x, y, rad);
+            ctx.arcTo(x, y, x + w, y, rad);
+            ctx.closePath();
+        }
+
+        function drawSunburst(ctx, cx, cy, radius, rays, angle, color1, color2) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(angle);
+            for (let i = 0; i < rays; i++) {
+                ctx.rotate((Math.PI * 2) / rays);
+                ctx.fillStyle = i % 2 === 0 ? color1 : color2;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-radius * 0.14, -radius);
+                ctx.lineTo(radius * 0.14, -radius);
+                ctx.closePath();
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function drawCuteStarBadge(ctx, cx, cy, r, scale, filled = true) {
+            if (scale <= 0.01) return;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.scale(scale, scale);
+
+            // Soft drop shadow
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.22)';
+            drawStar(ctx, 0, 5, 5, r, r * 0.48);
+            ctx.fill();
+
+            // Outer golden body
+            const grad = ctx.createLinearGradient(0, -r, 0, r);
+            if (filled) {
+                grad.addColorStop(0, '#FEF08A');
+                grad.addColorStop(0.5, '#FACC15');
+                grad.addColorStop(1, '#EA580C');
+            } else {
+                grad.addColorStop(0, 'rgba(255,255,255,0.35)');
+                grad.addColorStop(1, 'rgba(255,255,255,0.15)');
+            }
+            ctx.fillStyle = grad;
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 3;
+            drawStar(ctx, 0, 0, 5, r, r * 0.48);
+            ctx.fill();
+            ctx.stroke();
+
+            // Cute kawaii eyes on the star
+            if (filled) {
+                ctx.fillStyle = '#451A03';
+                ctx.beginPath();
+                ctx.arc(-r * 0.18, -r * 0.04, r * 0.08, 0, Math.PI * 2);
+                ctx.arc(r * 0.18, -r * 0.04, r * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(-r * 0.2, -r * 0.07, r * 0.03, 0, Math.PI * 2);
+                ctx.arc(r * 0.16, -r * 0.07, r * 0.03, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function drawRibbonBanner(ctx, cx, cy, w, h, progress, text = 'LEVEL CLEAR!') {
+            if (progress <= 0.01) return;
+            const p = easeOutBack(Math.min(1, progress));
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.scale(p, p);
+
+            // Ribbon Tails
+            ctx.fillStyle = '#BE123C';
+            ctx.beginPath();
+            ctx.moveTo(-w * 0.48, 6);
+            ctx.lineTo(-w * 0.6, 22);
+            ctx.lineTo(-w * 0.42, 22);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(w * 0.48, 6);
+            ctx.lineTo(w * 0.6, 22);
+            ctx.lineTo(w * 0.42, 22);
+            ctx.closePath();
+            ctx.fill();
+
+            // Main Satin Ribbon Body
+            const grad = ctx.createLinearGradient(0, -h / 2, 0, h / 2);
+            grad.addColorStop(0, '#FB7185');
+            grad.addColorStop(1, '#E11D48');
+            ctx.fillStyle = grad;
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 3;
+            drawRoundRect(ctx, -w / 2, -h / 2, w, h, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            // Bold Playful Text
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = `700 ${Math.round(h * 0.46)}px Fredoka, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 0, 1);
+            ctx.restore();
+        }
+
+        function drawCentralCard(ctx, cx, cy, w, h, scale = 1, bg = 'rgba(255,255,255,0.92)') {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.scale(scale, scale);
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.16)';
+            drawRoundRect(ctx, -w / 2, -h / 2 + 8, w, h, 28);
+            ctx.fill();
+
+            ctx.fillStyle = bg;
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 4;
+            drawRoundRect(ctx, -w / 2, -h / 2, w, h, 28);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // ============================================================================
+        // 8 BESPOKE LEVEL COMPLETE RENDERERS
+        // ============================================================================
+
+        // 1. STAR CASCADE & RIBBON POP
+        function renderStarCascade(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#38BDF8');
+            bg.addColorStop(1, '#1D4ED8');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            drawSunburst(ctx, w * 0.5, h * 0.36, h * 0.65, 16, t * 0.45, 'rgba(255,255,255,0.14)', 'rgba(255,255,255,0.03)');
+
+            const cardScale = easeOutBack(Math.min(1, t / 0.35));
+            drawCentralCard(ctx, w * 0.5, h * 0.46, w * 0.82, h * 0.42, cardScale);
+
+            // Sequential 3-star drop with sound triggers
+            const starTimes = [0.22, 0.44, 0.66];
+            const starPositions = [
+                [w * 0.28, h * 0.37, 26],
+                [w * 0.50, h * 0.33, 34],
+                [w * 0.72, h * 0.37, 26]
+            ];
+
+            starPositions.forEach(([sx, sy, sr], idx) => {
+                const st = t - starTimes[idx];
+                if (st >= 0 && !appState.starChimesPlayed[idx]) {
+                    appState.starChimesPlayed[idx] = true;
+                    sfx.playStarDing(idx);
+                    spawnConfettiBurst(sx / w, sy / h, 14);
+                }
+                const sScale = st > 0 ? easeOutElastic(Math.min(1, st / 0.55)) : 0;
+                drawCuteStarBadge(ctx, sx, sy, sr, sScale, true);
+            });
+
+            // Ribbon Pop at 0.35s
+            drawRibbonBanner(ctx, w * 0.5, h * 0.51, w * 0.72, 46, (t - 0.32) / 0.42, 'AWESOME!');
+
+            // Level Number Pill inside card
+            if (t > 0.5) {
+                const p = Math.min(1, (t - 0.5) / 0.3);
+                ctx.save();
+                ctx.globalAlpha = p;
+                ctx.fillStyle = '#EFF6FF';
+                drawRoundRect(ctx, w * 0.32, h * 0.58, w * 0.36, 30, 15);
+                ctx.fill();
+                ctx.fillStyle = '#1D4ED8';
+                ctx.font = '700 15px Fredoka, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('LEVEL 12', w * 0.5, h * 0.58 + 20);
+                ctx.restore();
+            }
+        }
+
+        // 2. PIÑATA CANDY BURST
+        function renderPinataBurst(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#F472B6');
+            bg.addColorStop(1, '#7E22CE');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            drawSunburst(ctx, w * 0.5, h * 0.38, h * 0.6, 14, -t * 0.35, 'rgba(254, 240, 138, 0.14)', 'transparent');
+
+            const popTime = 0.75;
+            const popped = t >= popTime;
+
+            if (popped && !appState.starChimesPlayed[0]) {
+                appState.starChimesPlayed[0] = true;
+                appState.shakeTime = 0.25;
+                sfx.playPop(0.85);
+                sfx.playStarDing(2);
+                spawnConfettiBurst(0.5, 0.36, 36, ['#FACC15', '#34D399', '#38BDF8', '#FB7185', '#FFFFFF']);
+            }
+
+            // Hanging String
+            ctx.strokeStyle = '#FEF08A';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(w * 0.5, 0);
+            ctx.lineTo(w * 0.5, h * 0.24);
+            ctx.stroke();
+
+            if (!popped) {
+                // Wobbling Star Piñata building anticipation
+                const wobble = Math.sin(t * 22) * (0.18 + t * 0.25);
+                const swell = 1 + (t / popTime) * 0.22;
+                ctx.save();
+                ctx.translate(w * 0.5, h * 0.35);
+                ctx.rotate(wobble);
+                ctx.scale(swell, swell);
+
+                // Multi-colored pastel stripes clipped to star
+                drawStar(ctx, 0, 0, 5, 56, 26);
+                ctx.save();
+                ctx.clip();
+                const stripes = ['#F43F5E', '#FACC15', '#34D399', '#38BDF8', '#A855F7'];
+                stripes.forEach((col, i) => {
+                    ctx.fillStyle = col;
+                    ctx.fillRect(-60, -60 + i * 24, 120, 24);
+                });
+                ctx.restore();
+
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 3.5;
+                drawStar(ctx, 0, 0, 5, 56, 26);
+                ctx.stroke();
+
+                // Cute excited face
+                ctx.fillStyle = '#1E1B4B';
+                ctx.beginPath();
+                ctx.arc(-12, -4, 4.5, 0, Math.PI * 2);
+                ctx.arc(12, -4, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(0, 6, 7, 0, Math.PI);
+                ctx.fill();
+                ctx.restore();
+            } else {
+                // Split Piñata Halves flying outward + Victory Badge
+                const dtPop = t - popTime;
+                const split = Math.min(110, dtPop * 240);
+                [-1, 1].forEach(dir => {
+                    ctx.save();
+                    ctx.translate(w * 0.5 + dir * split, h * 0.35 + dtPop * 90);
+                    ctx.rotate(dir * dtPop * 3.5);
+                    ctx.globalAlpha = Math.max(0, 1 - dtPop * 1.1);
+                    ctx.fillStyle = dir === -1 ? '#FACC15' : '#34D399';
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 28, 0, Math.PI);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.restore();
+                });
+
+                drawCentralCard(ctx, w * 0.5, h * 0.48, w * 0.8, h * 0.34, easeOutBack(Math.min(1, dtPop / 0.35)));
+                drawRibbonBanner(ctx, w * 0.5, h * 0.42, w * 0.72, 46, dtPop / 0.4, 'SWEET WIN!');
+
+                // 3 Mini Candy Stars
+                [0, 1, 2].forEach(i => {
+                    const sc = easeOutElastic(Math.min(1, Math.max(0, (dtPop - i * 0.1) / 0.45)));
+                    drawCuteStarBadge(ctx, w * (0.31 + i * 0.19), h * 0.55, 21, sc, true);
+                });
+            }
+        }
+
+        // 3. ROCKET BLAST-OFF & PLANET HOP
+        function renderRocketSpace(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#0F172A');
+            bg.addColorStop(0.55, '#312E81');
+            bg.addColorStop(1, '#4C1D95');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            // Twinkling Background Stars
+            for (let i = 0; i < 24; i++) {
+                const sx = ((i * 73) % 100) * 0.01 * w;
+                const sy = ((i * 41) % 75) * 0.01 * h;
+                const twinkle = 1.5 + Math.sin(t * 4 + i) * 1.2;
+                ctx.fillStyle = i % 3 === 0 ? '#FEF08A' : '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(sx, sy, Math.max(0.5, twinkle), 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Pastel Ringed Planet (Top Left)
+            ctx.save();
+            ctx.translate(w * 0.2, h * 0.2);
+            ctx.fillStyle = '#F472B6';
+            ctx.beginPath();
+            ctx.arc(0, 0, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#FDE047';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 34, 8, -0.35, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            // Smiling Crescent / Full Pastel Moon Surface at Bottom-Center
+            const moonY = h * 0.67;
+            const moonGrad = ctx.createRadialGradient(w * 0.45, moonY - 20, 10, w * 0.5, moonY + 20, 110);
+            moonGrad.addColorStop(0, '#FEF9C3');
+            moonGrad.addColorStop(1, '#FACC15');
+            ctx.fillStyle = moonGrad;
+            ctx.beginPath();
+            ctx.arc(w * 0.5, moonY + 35, 92, Math.PI * 1.08, Math.PI * 1.92);
+            ctx.closePath();
+            ctx.fill();
+
+            // Victory Flag Pops onto Moon at 0.55s
+            const flagP = easeOutBack(Math.min(1, Math.max(0, (t - 0.55) / 0.35)));
+            if (flagP > 0.01) {
+                if (!appState.starChimesPlayed[0]) {
+                    appState.starChimesPlayed[0] = true;
+                    sfx.playPop(1.2);
+                    spawnConfettiBurst(0.66, 0.5, 18, ['#38BDF8', '#FACC15', '#F472B6']);
+                }
+                ctx.save();
+                ctx.translate(w * 0.66, moonY - 22);
+                ctx.scale(flagP, flagP);
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, -48);
+                ctx.stroke();
+
+                ctx.fillStyle = '#10B981';
+                ctx.beginPath();
+                ctx.moveTo(0, -48);
+                ctx.lineTo(34, -36 + Math.sin(t * 7) * 3);
+                ctx.lineTo(0, -24);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Chunky Cartoon Rocket Landing on Moon
+            const landP = easeOutBounce(Math.min(1, t / 0.65));
+            const ry = -60 + landP * (moonY - 22 + 60);
+            ctx.save();
+            ctx.translate(w * 0.45, ry);
+
+            // Rocket Flame (pulsing)
+            const flameH = 16 + Math.sin(t * 25) * 5;
+            ctx.fillStyle = '#FB923C';
+            ctx.beginPath();
+            ctx.moveTo(-10, 0);
+            ctx.lineTo(10, 0);
+            ctx.lineTo(0, flameH);
+            ctx.closePath();
+            ctx.fill();
+
+            // Fins
+            ctx.fillStyle = '#F43F5E';
+            ctx.beginPath();
+            ctx.moveTo(-18, -8);
+            ctx.lineTo(-30, 6);
+            ctx.lineTo(-14, 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(18, -8);
+            ctx.lineTo(30, 6);
+            ctx.lineTo(14, 2);
+            ctx.closePath();
+            ctx.fill();
+
+            // Rocket Hull
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.ellipse(0, -28, 20, 34, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Red Nose Cone
+            ctx.fillStyle = '#F43F5E';
+            ctx.beginPath();
+            ctx.arc(0, -46, 15, Math.PI, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // Porthole Window
+            ctx.fillStyle = '#38BDF8';
+            ctx.strokeStyle = '#CBD5E1';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(0, -24, 9, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            // Top Banner & 3 Cosmic Stars
+            drawRibbonBanner(ctx, w * 0.5, h * 0.26, w * 0.74, 44, (t - 0.3) / 0.4, 'MISSION CLEAR!');
+            [0, 1, 2].forEach(i => {
+                const sc = easeOutElastic(Math.min(1, Math.max(0, (t - 0.45 - i * 0.14) / 0.45)));
+                drawCuteStarBadge(ctx, w * (0.28 + i * 0.22), h * 0.37, 22, sc, true);
+            });
+        }
+
+        // 4. TREASURE CHEST & BUBBLE POP
+        function renderTreasureChest(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#22D3EE');
+            bg.addColorStop(0.75, '#0284C7');
+            bg.addColorStop(1, '#0369A1');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            // Sunbeams filtering through water
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+            for (let i = 0; i < 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo(w * (0.1 + i * 0.25), 0);
+                ctx.lineTo(w * (0.22 + i * 0.25), 0);
+                ctx.lineTo(w * (0.35 + i * 0.22), h);
+                ctx.lineTo(w * (0.05 + i * 0.22), h);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Sandy Seabed
+            ctx.fillStyle = '#FDE047';
+            ctx.beginPath();
+            ctx.moveTo(0, h * 0.68);
+            ctx.quadraticCurveTo(w * 0.5, h * 0.63, w, h * 0.69);
+            ctx.lineTo(w, h);
+            ctx.lineTo(0, h);
+            ctx.closePath();
+            ctx.fill();
+
+            // Swaying Coral & Seaweed
+            ctx.strokeStyle = '#10B981';
+            ctx.lineWidth = 7;
+            ctx.lineCap = 'round';
+            [0.14, 0.86].forEach((sx, idx) => {
+                ctx.beginPath();
+                ctx.moveTo(w * sx, h * 0.72);
+                ctx.quadraticCurveTo(w * sx + Math.sin(t * 3 + idx) * 12, h * 0.62, w * sx, h * 0.54);
+                ctx.stroke();
+            });
+
+            // Treasure Chest Bounce & Lid Pop
+            const drop = easeOutBounce(Math.min(1, t / 0.48));
+            const chestY = h * 0.3 + drop * (h * 0.37);
+            const chestX = w * 0.5;
+            const lidOpen = t > 0.52 ? easeOutBack(Math.min(1, (t - 0.52) / 0.35)) : 0;
+
+            if (lidOpen > 0.2 && !appState.starChimesPlayed[0]) {
+                appState.starChimesPlayed[0] = true;
+                spawnConfettiBurst(0.5, 0.55, 24, ['#FEF08A', '#F472B6', '#38BDF8', '#FFFFFF']);
+            }
+
+            ctx.save();
+            ctx.translate(chestX, chestY);
+
+            // Golden Glow inside chest when opened
+            if (lidOpen > 0) {
+                const glow = ctx.createRadialGradient(0, -18, 4, 0, -28, 75 * lidOpen);
+                glow.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
+                glow.addColorStop(1, 'rgba(254, 240, 138, 0)');
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(0, -24, 75 * lidOpen, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Chest Base Box
+            ctx.fillStyle = '#B45309';
+            ctx.strokeStyle = '#FACC15';
+            ctx.lineWidth = 4;
+            drawRoundRect(ctx, -52, -24, 104, 48, 10);
+            ctx.fill();
+            ctx.stroke();
+
+            // Chest Lid (hinged upward)
+            ctx.save();
+            ctx.translate(0, -24 - lidOpen * 16);
+            ctx.scale(1, 1 - lidOpen * 0.35);
+            ctx.fillStyle = '#D97706';
+            drawRoundRect(ctx, -54, -22, 108, 24, 12);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            // Gold Lock Clasp
+            ctx.fillStyle = '#FEF08A';
+            drawRoundRect(ctx, -10, -30 - lidOpen * 6, 20, 18, 5);
+            ctx.fill();
+            ctx.restore();
+
+            // Banner & 3 Pearl Stars
+            drawRibbonBanner(ctx, w * 0.5, h * 0.23, w * 0.74, 44, (t - 0.35) / 0.4, 'TREASURE!');
+            [0, 1, 2].forEach(i => {
+                const sc = easeOutElastic(Math.min(1, Math.max(0, (t - 0.55 - i * 0.12) / 0.45)));
+                drawCuteStarBadge(ctx, w * (0.28 + i * 0.22), h * 0.35, 22, sc, true);
+            });
+        }
+
+        // 5. TROPHY GUMBALL MACHINE
+        function renderGumballMachine(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#FDBA74');
+            bg.addColorStop(1, '#F43F5E');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            drawSunburst(ctx, w * 0.5, h * 0.45, h * 0.65, 16, t * 0.3, 'rgba(255,255,255,0.16)', 'transparent');
+
+            // Retro Red Gumball Dispenser Base
+            const mx = w * 0.5;
+            const my = h * 0.56;
+
+            // Glass Globe with Colorful Gumballs
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.42)';
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(mx, my - 72, 54, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            const gumColors = ['#FACC15', '#38BDF8', '#4ADE80', '#F472B6', '#A855F7'];
+            for (let i = 0; i < 14; i++) {
+                const gx = mx + Math.cos(i * 1.7 + t * 2) * (18 + (i % 3) * 10);
+                const gy = my - 68 + Math.sin(i * 2.1 + t * 2) * (16 + (i % 2) * 10);
+                ctx.fillStyle = gumColors[i % gumColors.length];
+                ctx.beginPath();
+                ctx.arc(gx, gy, 10, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Red Dispenser Pedestal
+            ctx.fillStyle = '#E11D48';
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 3.5;
+            ctx.beginPath();
+            ctx.moveTo(mx - 34, my - 24);
+            ctx.lineTo(mx + 34, my - 24);
+            ctx.lineTo(mx + 46, my + 44);
+            ctx.lineTo(mx - 46, my + 44);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Rotating Crank Handle
+            ctx.save();
+            ctx.translate(mx, my + 6);
+            ctx.rotate(Math.min(Math.PI * 2, t * 9));
+            ctx.fillStyle = '#FACC15';
+            drawRoundRect(ctx, -22, -5, 44, 10, 5);
+            ctx.fill();
+            ctx.restore();
+
+            // Golden Trophy Cup Popping Out at 0.55s
+            const trophyP = easeOutElastic(Math.min(1, Math.max(0, (t - 0.5) / 0.55)));
+            if (trophyP > 0.1 && !appState.starChimesPlayed[0]) {
+                appState.starChimesPlayed[0] = true;
+                sfx.playStarDing(3);
+                spawnConfettiBurst(0.5, 0.34, 28);
+            }
+
+            if (trophyP > 0.01) {
+                ctx.save();
+                ctx.translate(mx, h * 0.34);
+                ctx.scale(trophyP, trophyP);
+
+                // Cup Handles
+                ctx.strokeStyle = '#FACC15';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.arc(-28, -12, 14, Math.PI * 0.5, Math.PI * 1.5);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(28, -12, 14, -Math.PI * 0.5, Math.PI * 0.5);
+                ctx.stroke();
+
+                // Golden Chalice
+                const tGrad = ctx.createLinearGradient(-24, -32, 24, 24);
+                tGrad.addColorStop(0, '#FEF08A');
+                tGrad.addColorStop(0.5, '#FACC15');
+                tGrad.addColorStop(1, '#D97706');
+                ctx.fillStyle = tGrad;
+                ctx.beginPath();
+                ctx.moveTo(-26, -30);
+                ctx.lineTo(26, -30);
+                ctx.quadraticCurveTo(22, 8, 0, 12);
+                ctx.quadraticCurveTo(-22, 8, -26, -30);
+                ctx.fill();
+
+                // Stem & Pedestal
+                ctx.fillRect(-6, 10, 12, 16);
+                ctx.fillStyle = '#78350F';
+                drawRoundRect(ctx, -22, 24, 44, 12, 5);
+                ctx.fill();
+
+                // Star Emblem on Trophy
+                ctx.fillStyle = '#FFFFFF';
+                drawStar(ctx, 0, -12, 5, 11, 5);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            drawRibbonBanner(ctx, w * 0.5, h * 0.18, w * 0.74, 44, (t - 0.25) / 0.4, 'PRIZE WON!');
+        }
+
+        // 6. RAINBOW SLIDE & MASCOT DANCE
+        function renderRainbowSlide(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#FCE7F3');
+            bg.addColorStop(0.5, '#EDE9FE');
+            bg.addColorStop(1, '#DBEAFE');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            // Pastel Rainbow Arc
+            const arcP = Math.min(1, t / 0.55);
+            const rainbowCols = ['#FB7185', '#FBBF24', '#34D399', '#60A5FA', '#C084FC'];
+            rainbowCols.forEach((col, i) => {
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 11;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.arc(w * 0.5, h * 0.62, 118 - i * 11, Math.PI, Math.PI + Math.PI * arcP);
+                ctx.stroke();
+            });
+
+            // Fluffy Clouds at Rainbow Ends
+            const drawCloud = (cx, cy) => {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(cx - 18, cy + 4, 16, 0, Math.PI * 2);
+                ctx.arc(cx, cy - 4, 22, 0, Math.PI * 2);
+                ctx.arc(cx + 18, cy + 4, 16, 0, Math.PI * 2);
+                ctx.fill();
+            };
+            drawCloud(w * 0.18, h * 0.62);
+            drawCloud(w * 0.82, h * 0.62);
+
+            // Chubby Kawaii Bunny Mascot Sliding & Dancing
+            const slideT = Math.min(1, t / 0.55);
+            const danceBounce = t > 0.55 ? Math.abs(Math.sin((t - 0.55) * 7)) * 18 : 0;
+            const mx = w * (0.2 + slideT * 0.3);
+            const my = h * 0.57 - Math.sin(slideT * Math.PI) * 52 - danceBounce;
+
+            if (t > 0.55 && !appState.starChimesPlayed[0]) {
+                appState.starChimesPlayed[0] = true;
+                sfx.playStarDing(1);
+                spawnConfettiBurst(0.5, 0.5, 22, ['#FB7185', '#FBBF24', '#C084FC', '#34D399']);
+            }
+
+            ctx.save();
+            ctx.translate(mx, my);
+            ctx.strokeStyle = '#6D597A';
+            ctx.lineWidth = 3;
+
+            // Ears
+            ctx.fillStyle = '#FFFFFF';
+            drawRoundRect(ctx, -18, -64, 12, 26, 6);
+            ctx.fill();
+            ctx.stroke();
+            drawRoundRect(ctx, 6, -64, 12, 26, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            // Body
+            drawRoundRect(ctx, -26, -44, 52, 44, 22);
+            ctx.fill();
+            ctx.stroke();
+
+            // Happy Closed Arc Eyes + Rosy Cheeks
+            ctx.beginPath();
+            ctx.arc(-10, -24, 4, Math.PI, 0);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(10, -24, 4, Math.PI, 0);
+            ctx.stroke();
+
+            ctx.fillStyle = '#F472B6';
+            ctx.beginPath();
+            ctx.arc(-16, -18, 4.5, 0, Math.PI * 2);
+            ctx.arc(16, -18, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Banner & 3 Pastel Stars
+            drawRibbonBanner(ctx, w * 0.5, h * 0.2, w * 0.74, 44, (t - 0.2) / 0.4, 'SO CUTE!');
+            [0, 1, 2].forEach(i => {
+                const sc = easeOutElastic(Math.min(1, Math.max(0, (t - 0.45 - i * 0.12) / 0.45)));
+                drawCuteStarBadge(ctx, w * (0.28 + i * 0.22), h * 0.31, 21, sc, true);
+            });
+        }
+
+        // 7. STICKER STAMP & CONFETTI POP
+        function renderStickerStamp(ctx, w, h, t) {
+            // Warm Craft Paper Background with Subtle Dot Grid
+            ctx.fillStyle = '#FEF3C7';
+            ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.14)';
+            for (let x = 18; x < w; x += 22) {
+                for (let y = 18; y < h; y += 22) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Unfolding Stitched Cardstock Frame
+            const cardP = easeOutBack(Math.min(1, t / 0.3));
+            drawCentralCard(ctx, w * 0.5, h * 0.45, w * 0.82, h * 0.48, cardP, '#FFFBEB');
+
+            // Helper for Thick Die-Cut Vinyl Sticker
+            const drawSticker = (sx, sy, rot, slapTime, drawInner) => {
+                const dt = t - slapTime;
+                if (dt < 0) return;
+                const scale = dt < 0.12 ? 1.55 - (dt / 0.12) * 0.55 : 1;
+                ctx.save();
+                ctx.translate(sx, sy);
+                ctx.rotate(rot);
+                ctx.scale(scale, scale);
+                ctx.shadowColor = 'rgba(15, 23, 42, 0.22)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 5;
+                drawInner();
+                ctx.restore();
+            };
+
+            // Stamp 1: Golden Crown Sticker at 0.25s
+            if (t >= 0.25 && !appState.starChimesPlayed[0]) {
+                appState.starChimesPlayed[0] = true;
+                appState.shakeTime = 0.12;
+                sfx.playPop(0.95);
+            }
+            drawSticker(w * 0.5, h * 0.29, -0.06, 0.25, () => {
+                // White vinyl backing
+                ctx.fillStyle = '#FFFFFF';
+                drawRoundRect(ctx, -44, -28, 88, 52, 16);
+                ctx.fill();
+                // Gold Crown
+                ctx.fillStyle = '#FACC15';
+                ctx.beginPath();
+                ctx.moveTo(-30, 14);
+                ctx.lineTo(-34, -14);
+                ctx.lineTo(-14, 0);
+                ctx.lineTo(0, -18);
+                ctx.lineTo(14, 0);
+                ctx.lineTo(34, -14);
+                ctx.lineTo(30, 14);
+                ctx.closePath();
+                ctx.fill();
+            });
+
+            // Stamp 2: 3 Vinyl Star Stickers
+            [0, 1, 2].forEach(i => {
+                const st = 0.42 + i * 0.14;
+                if (t >= st && !appState.starChimesPlayed[i + 1]) {
+                    appState.starChimesPlayed[i + 1] = true;
+                    appState.shakeTime = 0.1;
+                    sfx.playStarDing(i);
+                    spawnConfettiBurst(0.29 + i * 0.21, 0.44, 10);
+                }
+                const dt = t - st;
+                const sc = dt >= 0 ? (dt < 0.12 ? 1.5 - (dt / 0.12) * 0.5 : 1) : 0;
+                drawCuteStarBadge(ctx, w * (0.29 + i * 0.21), h * 0.44, 24, sc, true);
+            });
+
+            // Stamp 3: "SUPER!" Die-Cut Banner Sticker at 0.85s
+            drawSticker(w * 0.5, h * 0.58, 0.04, 0.85, () => {
+                ctx.fillStyle = '#FFFFFF';
+                drawRoundRect(ctx, -96, -24, 192, 48, 24);
+                ctx.fill();
+                ctx.fillStyle = '#EC4899';
+                drawRoundRect(ctx, -90, -18, 180, 36, 18);
+                ctx.fill();
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '700 20px Fredoka, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('SUPER STAR!', 0, 1);
+            });
+        }
+
+        // 8. FIREWORKS & BALLOON PARADE
+        function renderBalloonParade(ctx, w, h, t) {
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#3B82F6');
+            bg.addColorStop(0.6, '#6366F1');
+            bg.addColorStop(1, '#8B5CF6');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            // Periodic Cheerful Sky Fireworks
+            const fwCycle = t % 1.3;
+            const fwX = w * (0.24 + (Math.floor(t / 1.3) % 3) * 0.26);
+            const fwY = h * 0.22;
+            if (fwCycle < 0.85) {
+                const rad = (fwCycle / 0.85) * 58;
+                const alpha = 1 - fwCycle / 0.85;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                for (let i = 0; i < 12; i++) {
+                    const a = (Math.PI * 2 * i) / 12;
+                    ctx.fillStyle = i % 2 === 0 ? '#FEF08A' : '#F472B6';
+                    drawStar(ctx, fwX + Math.cos(a) * rad, fwY + Math.sin(a) * rad, 5, 6, 2.5);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            // Floating Banner lifted by Twin Parade Balloons
+            const floatY = h * 0.4 + Math.sin(t * 2.5) * 6;
+            const entryP = easeOutBack(Math.min(1, t / 0.55));
+
+            ctx.save();
+            ctx.translate(w * 0.5, floatY + (1 - entryP) * 140);
+
+            // Strings connecting banner to top balloons
+            ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+            ctx.lineWidth = 2.5;
+            [-75, 75].forEach(bx => {
+                ctx.beginPath();
+                ctx.moveTo(bx, -20);
+                ctx.lineTo(bx * 1.15, -72);
+                ctx.stroke();
+
+                // Parade Balloon
+                ctx.fillStyle = bx < 0 ? '#F43F5E' : '#FACC15';
+                ctx.beginPath();
+                ctx.ellipse(bx * 1.15, -94, 22, 27, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.beginPath();
+                ctx.ellipse(bx * 1.15 - 7, -102, 5, 9, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            drawRibbonBanner(ctx, 0, 0, w * 0.74, 48, 1, 'LEVEL UP!');
+            [0, 1, 2].forEach(i => {
+                const sc = easeOutElastic(Math.min(1, Math.max(0, (t - 0.35 - i * 0.14) / 0.45)));
+                drawCuteStarBadge(ctx, (i - 1) * 56, 56, 22, sc, true);
+            });
+            ctx.restore();
+        }
+
+        const SCENE_RENDERERS = {
+            'star-cascade': renderStarCascade,
+            'pinata-burst': renderPinataBurst,
+            'rocket-space': renderRocketSpace,
+            'treasure-chest': renderTreasureChest,
+            'gumball-machine': renderGumballMachine,
+            'rainbow-slide': renderRainbowSlide,
+            'sticker-stamp': renderStickerStamp,
+            'balloon-parade': renderBalloonParade
+        };
+
+        // ============================================================================
+        // INTERACTIVE TOYS & PARTICLE UPDATER
+        // ============================================================================
+        function updateAndDrawInteractiveLayer(ctx, w, h, dt) {
+            // 1. Update & render interactive tappable toys (bubbles, balloons, candies)
+            appState.interactiveToys.forEach(toy => {
+                toy.wobble += dt * 3.5;
+                toy.y += toy.vy * dt;
+                if (toy.y < -0.1) toy.y = 0.85;
+                const tx = (toy.x + Math.sin(toy.wobble) * 0.025) * w;
+                const ty = toy.y * h;
+
+                ctx.save();
+                ctx.translate(tx, ty);
+                if (toy.type === 'bubble') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, toy.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.beginPath();
+                    ctx.arc(-toy.r * 0.35, -toy.r * 0.35, toy.r * 0.22, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (toy.type === 'balloon') {
+                    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, toy.r);
+                    ctx.lineTo(0, toy.r + 22);
+                    ctx.stroke();
+
+                    ctx.fillStyle = toy.color;
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, toy.r * 0.85, toy.r, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (toy.type === 'candy') {
+                    ctx.rotate(Math.sin(toy.wobble) * 0.4);
+                    ctx.fillStyle = toy.color;
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 2;
+                    drawRoundRect(ctx, -11, -7, 22, 14, 7);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+                ctx.restore();
+            });
+
+            // 2. Update & render celebratory confetti particles
+            for (let i = appState.particles.length - 1; i >= 0; i--) {
+                const p = appState.particles[i];
+                p.x += (p.vx * dt) / w;
+                p.y += (p.vy * dt) / h;
+                p.vy += 320 * dt; // Gravity
+                p.vx *= 0.99;
+                p.rot += p.vrot * dt;
+                p.life -= p.decay * dt;
+
+                if (p.life <= 0) {
+                    appState.particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.translate(p.x * w, p.y * h);
+                ctx.rotate(p.rot);
+                ctx.fillStyle = p.color;
+
+                if (p.shape === 'star') {
+                    drawStar(ctx, 0, 0, 5, p.size * 1.25, p.size * 0.55);
+                    ctx.fill();
+                } else if (p.shape === 'ribbon') {
+                    ctx.fillRect(-p.size, -p.size * 0.45, p.size * 2, p.size * 0.9);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, p.size * 0.75, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        // ============================================================================
+        // UI BUILDING, SELECTION & INTERACTION HANDLERS
+        // ============================================================================
+        const selectorListEl = document.getElementById('styleSelectorList');
+        const canvas = document.getElementById('celebrationCanvas');
+
+        function updateDetailPanel(style) {
+            document.getElementById('detailBadge').textContent = style.tag;
+            document.getElementById('detailTitle').textContent = style.name;
+            document.getElementById('detailEmoji').textContent = style.emoji;
+            document.getElementById('detailSummary').textContent = style.summary;
+            document.getElementById('detailTiming').textContent = style.timing;
+            document.getElementById('detailAudio').textContent = style.audio;
+            document.getElementById('detailKidUx').textContent = style.kidUx;
+        }
+
+        function buildSelectorList() {
+            selectorListEl.innerHTML = '';
+            CELEBRATIONS.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.dataset.id = item.id;
+                btn.className = `style-pill ${item.id === appState.activeId ? 'active' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'} w-full text-left px-3.5 py-3 rounded-2xl border transition flex items-center gap-3 cursor-pointer`;
+                btn.innerHTML = `
+                    <span class="text-xl w-9 h-9 rounded-xl bg-black/5 flex items-center justify-center shrink-0">${item.emoji}</span>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-display font-bold text-sm leading-tight truncate">${item.number}. ${item.name}</div>
+                        <div class="text-[11px] opacity-80 truncate">${item.tag}</div>
+                    </div>
+                `;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.style-pill').forEach(p => {
+                        p.classList.remove('active');
+                        p.classList.add('bg-white', 'hover:bg-slate-50', 'text-slate-800', 'border-slate-200');
+                    });
+                    btn.classList.add('active');
+                    btn.classList.remove('bg-white', 'hover:bg-slate-50', 'text-slate-800', 'border-slate-200');
+                    updateDetailPanel(item);
+                    startCelebration(item.id, true);
+                });
+                selectorListEl.appendChild(btn);
+            });
+        }
+
+        // Tap anywhere inside the 9:16 mobile screen
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const nx = (e.clientX - rect.left) / rect.width;
+            const ny = (e.clientY - rect.top) / rect.height;
+
+            // Check if user tapped an interactive toy (bubble / balloon / candy)
+            let hitToy = false;
+            for (let i = appState.interactiveToys.length - 1; i >= 0; i--) {
+                const toy = appState.interactiveToys[i];
+                const dx = (nx - toy.x) * rect.width;
+                const dy = (ny - toy.y) * rect.height;
+                if (Math.hypot(dx, dy) <= toy.r + 16) {
+                    hitToy = true;
+                    sfx.playPop(1.25);
+                    spawnConfettiBurst(toy.x, toy.y, 16, [toy.color, '#FEF08A', '#FFFFFF']);
+                    // Respawn toy at bottom so kid can keep popping
+                    toy.y = 0.86;
+                    toy.x = 0.16 + Math.random() * 0.68;
+                    break;
+                }
+            }
+
+            if (!hitToy) {
+                sfx.playStarDing(Math.floor(Math.random() * 4));
+                spawnConfettiBurst(nx, ny, 22);
+                appState.shakeTime = 0.1;
+            }
+        });
+
+        // Header & Phone Dock Buttons
+        document.getElementById('replayBtn').addEventListener('click', () => startCelebration(appState.activeId, true));
+        document.getElementById('phoneReplayBtn').addEventListener('click', () => startCelebration(appState.activeId, true));
+
+        document.getElementById('burstBtn').addEventListener('click', () => {
+            sfx.playStarDing(3);
+            spawnConfettiBurst(0.5, 0.38, 34);
+            appState.shakeTime = 0.14;
+        });
+
+        // Next Level Button cycles smoothly into the next celebration style
+        document.getElementById('phoneNextBtn').addEventListener('click', () => {
+            const idx = CELEBRATIONS.findIndex(c => c.id === appState.activeId);
+            const next = CELEBRATIONS[(idx + 1) % CELEBRATIONS.length];
+            const pill = document.querySelector(`.style-pill[data-id="${next.id}"]`);
+            if (pill) pill.click();
+        });
+
+        // Home Button triggers celebratory star shower + whoosh
+        document.getElementById('phoneHomeBtn').addEventListener('click', () => {
+            sfx.playWhoosh();
+            spawnConfettiBurst(0.5, 0.72, 26);
+        });
+
+        // Audio Mute/Unmute Toggle
+        document.getElementById('audioToggleBtn').addEventListener('click', () => {
+            sfx.enabled = !sfx.enabled;
+            const onIcon = document.getElementById('soundOnIcon');
+            const offIcon = document.getElementById('soundOffIcon');
+            const label = document.getElementById('audioLabel');
+            if (sfx.enabled) {
+                onIcon.classList.remove('hidden');
+                offIcon.classList.add('hidden');
+                label.textContent = 'SFX On';
+                sfx.playPop(1.1);
+            } else {
+                onIcon.classList.add('hidden');
+                offIcon.classList.remove('hidden');
+                label.textContent = 'Muted';
+            }
+        });
+
+        // ============================================================================
+        // RESPONSIVE 60FPS ANIMATION LOOP
+        // ============================================================================
+        function syncCanvasSize() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const rect = canvas.getBoundingClientRect();
+            const tw = Math.max(1, Math.round(rect.width * dpr));
+            const th = Math.max(1, Math.round(rect.height * dpr));
+            if (canvas.width !== tw || canvas.height !== th) {
+                canvas.width = tw;
+                canvas.height = th;
+            }
+            return { w: tw, h: th };
+        }
+
+        function animate(now) {
+            const dt = Math.min((now - appState.lastTime) / 1000, 0.05);
+            appState.lastTime = now;
+            appState.elapsed += dt;
+
+            const { w, h } = syncCanvasSize();
+            const ctx = canvas.getContext('2d');
+
+            ctx.save();
+            // Apply micro screen shake on big stamp/piñata impacts
+            if (appState.shakeTime > 0) {
+                appState.shakeTime -= dt;
+                const mag = appState.shakeTime * 28;
+                ctx.translate((Math.random() - 0.5) * mag, (Math.random() - 0.5) * mag);
+            }
+
+            const renderer = SCENE_RENDERERS[appState.activeId];
+            if (renderer) {
+                renderer(ctx, w, h, appState.elapsed);
+            }
+            updateAndDrawInteractiveLayer(ctx, w, h, dt);
+            ctx.restore();
+
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = function () {
+            buildSelectorList();
+            updateDetailPanel(CELEBRATIONS[0]);
+            startCelebration('star-cascade', false);
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>

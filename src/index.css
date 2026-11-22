@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Tactile Paper Cutout & Glowing Toybox Craft Surfaces */
+.paper-card {
+  border: 3px solid #FFFFFF;
+  box-shadow:
+    0 6px 0 rgba(15, 23, 42, 0.14),
+    0 12px 24px -6px rgba(15, 23, 42, 0.16);
+}
+
+.paper-card-dark {
+  border: 3px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 6px 0 rgba(0, 0, 0, 0.35),
+    0 0 22px rgba(34, 211, 238, 0.25);
+}
+
+.sticker-btn {
+  border: 3px solid #FFFFFF;
+  box-shadow:
+    0 5px 0 rgba(15, 23, 42, 0.22),
+    0 10px 18px -4px rgba(15, 23, 42, 0.2);
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+  cursor: pointer;
+}
+
+.sticker-btn:active:not(:disabled) {
+  transform: translateY(4px) scale(0.96);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.22);
+}
+
+.sticker-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.craft-dot-bg {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.craft-star-bg {
+  background-image:
+    radial-gradient(rgba(250, 204, 21, 0.3) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(34, 211, 238, 0.22) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* Custom Animations */
+@keyframes paperDropBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-42px) scale(0.7, 1.25);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.12, 0.88);
+  }
+  82% {
+    transform: translateY(-2px) scale(0.97, 1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+.animate-paper-drop {
+  animation: paperDropBounce 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes toyWobble {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  20% { transform: translateX(-6px) rotate(-3.5deg); }
+  40% { transform: translateX(6px) rotate(3.5deg); }
+  60% { transform: translateX(-4px) rotate(-2deg); }
+  80% { transform: translateX(4px) rotate(2deg); }
+}
+
+.animate-toy-wobble {
+  animation: toyWobble 0.42s ease-in-out;
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+
+.animate-float-gentle {
+  animation: floatGentle 2.8s ease-in-out infinite;
+}
+
+/* Instruction #9: Unlockable New World Movement + Glow & Shine Sweep */
+@keyframes unlockHopGlow {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    box-shadow:
+      0 0 0 4px rgba(250, 204, 21, 0.9),
+      0 0 28px 6px rgba(250, 204, 21, 0.7),
+      0 10px 25px rgba(15, 23, 42, 0.25);
+  }
+  35% {
+    transform: translateY(-10px) scale(1.04) rotate(-1.8deg);
+    box-shadow:
+      0 0 0 6px rgba(34, 211, 238, 0.95),
+      0 0 38px 12px rgba(250, 204, 21, 0.85),
+      0 18px 30px rgba(15, 23, 42, 0.28);
+  }
+  70% {
+    transform: translateY(-4px) scale(1.02) rotate(1.8deg);
+  }
+}
+
+.animate-unlock-ready {
+  animation: unlockHopGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes shineSweep {
+  0% {
+    transform: translateX(-140%) skewX(-24deg);
+  }
+  55%, 100% {
+    transform: translateX(240%) skewX(-24deg);
+  }
+}
+
+.shine-sweep-bar {
+  position: absolute;
+  inset: 0;
+  width: 55%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shineSweep 2.1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes popFloatScore {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.7);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(-12px) scale(1.12);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-54px) scale(0.95);
+  }
+}
+
+.animate-score-float {
+  animation: popFloatScore 0.95s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes serveGlowPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 6px 0 rgba(15, 23, 42, 0.24), 0 0 0 0 rgba(34, 211, 238, 0.7);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 6px 0 rgba(15, 23, 42, 0.24), 0 0 24px 6px rgba(34, 211, 238, 0.75);
+  }
+}
+
+.animate-serve-ready {
+  animation: serveGlowPulse 1.15s ease-in-out infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-gentle,
+  .animate-unlock-ready,
+  .shine-sweep-bar,
+  .animate-serve-ready {
+    animation: none !important;
+  }
+}

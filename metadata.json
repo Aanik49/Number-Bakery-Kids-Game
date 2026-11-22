@@ -1,0 +1,6 @@
+{
+  "name": "Number Bakery",
+  "description": "A paper-craft and glowing toybox mobile math bakery game for kids ages 7-10 with 60 levels across 6 bakery worlds, dual-item mental math, piñata celebrations, treasure reveals, and daily streak reminders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

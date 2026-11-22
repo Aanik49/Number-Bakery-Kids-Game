@@ -1,0 +1,17 @@
+{
+  "appId": "com.numberbakery.game",
+  "appName": "Number Bakery",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_launcher",
+      "iconColor": "#FF5E7E",
+      "sound": "default"
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#FFF3E8"
+  }
+}

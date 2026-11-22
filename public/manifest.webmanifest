@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "Number Bakery",
+  "short_name": "NumBakery",
+  "description": "Stack trays of 2, 5, and 10 to bake exact treat orders across 6 glowing paper-craft bakery worlds!",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#FF5E7E",
+  "background_color": "#FFF6EE",
+  "categories": ["games", "education", "kids"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

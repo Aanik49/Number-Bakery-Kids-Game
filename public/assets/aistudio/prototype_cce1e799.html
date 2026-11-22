@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Number Bakery — Interactive Mobile Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF8E7;
+      --cream-dark: #F5E6C8;
+      --pink: #FF6B8B;
+      --pink-dark: #D94868;
+      --mint: #4ECDC4;
+      --mint-dark: #2EA89F;
+      --honey: #FFD166;
+      --honey-dark: #E0A82E;
+      --choco: #3D2314;
+      --wood: #D49A6A;
+      --wood-dark: #A66E3E;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #2B1B12;
+      background-image: radial-gradient(#3D261A 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      margin: 0;
+      padding: 0;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      color: var(--choco);
+    }
+
+    h1, h2, h3, .font-fredoka {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Mobile Portrait Frame */
+    .phone-frame {
+      width: 100%;
+      max-width: 400px;
+      height: 100dvh;
+      max-height: 844px;
+      background-color: var(--cream);
+      border: 6px solid var(--choco);
+      border-radius: 38px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 0 0 4px #FFFDF7;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @media (max-width: 430px) {
+      .phone-frame {
+        max-width: 100%;
+        height: 100dvh;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Awning Stripes Top Decoration */
+    .bakery-awning {
+      height: 14px;
+      width: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        #FF6B8B 0px,
+        #FF6B8B 24px,
+        #FFFDF7 24px,
+        #FFFDF7 48px
+      );
+      border-bottom: 3px solid var(--choco);
+      flex-shrink: 0;
+    }
+
+    /* Tactile 2.5D Buttons */
+    .btn-tactile {
+      border: 3px solid var(--choco);
+      transition: transform 0.08s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.08s ease, background-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-tactile:active:not(:disabled) {
+      transform: translateY(4px) scale(0.97);
+      box-shadow: 0 1px 0 var(--choco) !important;
+    }
+
+    .btn-tray {
+      background: linear-gradient(180deg, #F6CFA4 0%, #E3AE76 100%);
+      box-shadow: 0 5px 0 var(--choco), inset 0 2px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-serve-idle {
+      background: linear-gradient(180deg, #FFE08A 0%, #FFD166 100%);
+      box-shadow: 0 6px 0 var(--choco), inset 0 2px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-serve-ready {
+      background: linear-gradient(180deg, #6CE5DC 0%, #3AC2B8 100%);
+      box-shadow: 0 6px 0 var(--choco), 0 0 20px rgba(78, 205, 196, 0.65), inset 0 2px 0 rgba(255, 255, 255, 0.7);
+      animation: readyPulse 1.2s infinite ease-in-out;
+    }
+
+    .btn-tool {
+      background: #FFFDF7;
+      box-shadow: 0 4px 0 var(--choco);
+    }
+
+    .btn-tool:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Animations */
+    @keyframes readyPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    @keyframes dropBounce {
+      0% {
+        opacity: 0;
+        transform: translateY(-55px) scale(0.65, 1.25);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(4px) scale(1.15, 0.85);
+      }
+      80% {
+        transform: translateY(-3px) scale(0.95, 1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1, 1);
+      }
+    }
+
+    .treat-layer-enter {
+      animation: dropBounce 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes wobbleStack {
+      0%, 100% { transform: rotate(0deg) translateX(0); }
+      20% { transform: rotate(-4deg) translateX(-6px); }
+      40% { transform: rotate(4deg) translateX(6px); }
+      60% { transform: rotate(-3deg) translateX(-4px); }
+      80% { transform: rotate(3deg) translateX(4px); }
+    }
+
+    .animate-wobble {
+      animation: wobbleStack 0.45s ease-in-out;
+    }
+
+    @keyframes customerSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateX(70px) scale(0.9);
+      }
+      70% {
+        opacity: 1;
+        transform: translateX(-6px) scale(1.02);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    .customer-enter {
+      animation: customerSlideIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes floatUpFade {
+      0% { opacity: 1; transform: translateY(0) scale(0.8); }
+      50% { opacity: 1; transform: translateY(-28px) scale(1.15); }
+      100% { opacity: 0; transform: translateY(-55px) scale(1); }
+    }
+
+    .floating-feedback {
+      animation: floatUpFade 0.95s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes bobGentle {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .customer-bob {
+      animation: bobGentle 2.2s infinite ease-in-out;
+    }
+
+    /* Bakery Counter Pattern */
+    .counter-surface {
+      background-color: #F3DEC0;
+      background-image: linear-gradient(180deg, #E7CAA1 0%, #F7E8D0 22%, #F3DEC0 100%);
+      border-top: 4px solid var(--choco);
+    }
+
+    /* Custom Scrollbar hide */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Phone Frame -->
+  <main class="phone-frame" id="game-app">
+    <!-- Decorative Bakery Awning -->
+    <div class="bakery-awning"></div>
+
+    <!-- 1. TOP HUD -->
+    <header class="px-3 py-2 bg-[#FFFDF7] border-b-[3px] border-[#3D2314] flex items-center justify-between gap-1.5 shrink-0 z-20">
+      <!-- Tip Coins Counter -->
+      <div class="flex items-center gap-1.5 bg-[#FFD166] border-[2.5px] border-[#3D2314] rounded-full px-2.5 py-1 shadow-[0_2px_0_#3D2314]">
+        <span class="text-base leading-none">🪙</span>
+        <span id="hud-coins" class="font-fredoka font-bold text-sm sm:text-base tracking-wide">0</span>
+      </div>
+
+      <!-- Level Badge -->
+      <div class="flex flex-col items-center">
+        <span id="hud-level" class="font-fredoka font-bold text-xs sm:text-sm bg-[#FF6B8B] text-white border-[2.5px] border-[#3D2314] rounded-full px-3 py-0.5 shadow-[0_2px_0_#3D2314] whitespace-nowrap">
+          Lvl 1: Cookie Rush
+        </span>
+      </div>
+
+      <!-- Right Toggles: Math Helper & Sound -->
+      <div class="flex items-center gap-1.5">
+        <button id="btn-helper-toggle" title="Toggle Math Counter Helper" class="btn-tactile bg-[#4ECDC4] text-[#3D2314] rounded-full px-2 py-1 text-xs font-extrabold shadow-[0_2px_0_#3D2314] flex items-center gap-1">
+          <span>🔢</span>
+          <span id="helper-label" class="hidden sm:inline">ON</span>
+        </button>
+        <button id="btn-sound-toggle" title="Toggle Sound" class="btn-tactile bg-[#FFF8E7] rounded-full w-8 h-8 flex items-center justify-center text-sm shadow-[0_2px_0_#3D2314]">
+          🔊
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. TOP ZONE: CUSTOMER & ORDER -->
+    <section class="relative px-3 pt-2 pb-2.5 bg-gradient-to-b from-[#FFEFF2] to-[#FFF8E7] flex flex-col justify-between shrink-0 z-10" style="min-height: 215px;">
+      <!-- Oven Timer Thermometer Bar -->
+      <div class="w-full flex items-center gap-2 mb-1">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-[#7A4B32] flex items-center gap-1 shrink-0">
+          🔥 Oven
+        </span>
+        <div class="flex-1 h-3.5 bg-[#E8D5B7] border-[2.5px] border-[#3D2314] rounded-full overflow-hidden p-0.5 relative">
+          <div id="oven-timer-bar" class="h-full bg-[#4ECDC4] rounded-full transition-all duration-200" style="width: 100%;"></div>
+        </div>
+        <span id="oven-bonus-tag" class="text-[11px] font-black bg-[#FFD166] border-2 border-[#3D2314] rounded-md px-1.5 py-0.2 leading-tight">
+          +5 Tip
+        </span>
+      </div>
+
+      <!-- Customer & Speech Bubble Stage -->
+      <div id="customer-stage" class="flex items-center justify-between gap-2 my-auto px-1">
+        <!-- Customer Avatar Container -->
+        <div class="flex flex-col items-center w-24 shrink-0">
+          <div id="customer-avatar" class="w-20 h-20 rounded-full bg-white border-[3px] border-[#3D2314] shadow-[0_4px_0_#3D2314] flex items-center justify-center relative customer-bob overflow-hidden">
+            <!-- SVG Character injected via JS -->
+          </div>
+          <span id="customer-name" class="mt-1 text-xs font-black bg-[#3D2314] text-[#FFF8E7] px-2 py-0.5 rounded-full">
+            Barnaby Bear
+          </span>
+        </div>
+
+        <!-- Order Speech Bubble -->
+        <div class="flex-1 relative bg-white border-[3px] border-[#3D2314] rounded-2xl p-2.5 shadow-[0_4px_0_#3D2314]">
+          <!-- Speech Bubble Pointer -->
+          <div class="w-3.5 h-3.5 bg-white border-l-[3px] border-b-[3px] border-[#3D2314] rotate-45 absolute -left-2 top-1/2 -translate-y-1/2"></div>
+
+          <!-- Order Headline -->
+          <div class="flex items-center justify-between gap-1">
+            <span id="order-tag" class="text-[11px] font-black uppercase tracking-wider text-[#FF6B8B]">
+              Order #1
+            </span>
+            <span id="twist-badge" class="hidden text-[10px] font-black uppercase bg-[#FFD166] border border-[#3D2314] px-1.5 rounded-full">
+              ✨ Twist!
+            </span>
+          </div>
+
+          <!-- Main Target Display -->
+          <div class="flex items-center gap-2 mt-0.5">
+            <span id="order-target-number" class="font-fredoka font-bold text-3xl sm:text-4xl text-[#3D2314] leading-none">
+              12
+            </span>
+            <div class="flex flex-col">
+              <span id="order-treat-name" class="font-fredoka font-bold text-base sm:text-lg leading-tight text-[#3D2314]">
+                Cookies!
+              </span>
+              <span id="order-subtext" class="text-xs font-bold text-[#7A4B32] leading-tight">
+                Stack trays to match!
+              </span>
+            </div>
+            <div id="order-treat-icon" class="ml-auto w-10 h-10 flex items-center justify-center shrink-0">
+              <!-- Treat SVG injected via JS -->
+            </div>
+          </div>
+
+          <!-- Customer Dynamic Reaction Line -->
+          <div id="customer-speech-feedback" class="mt-1.5 pt-1 border-t-2 border-dashed border-[#F0DFC8] text-xs font-extrabold text-[#2EA89F] min-h-[20px]">
+            "Fresh from the oven, please!"
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MIDDLE ZONE: PREP COUNTER & VISUAL STACKING -->
+    <section class="counter-surface flex-1 relative flex flex-col justify-between px-3 py-2 overflow-hidden">
+      <!-- Top Bar of Prep Counter: Live Counter Pill -->
+      <div class="flex items-center justify-center z-10">
+        <div id="live-counter-badge" class="bg-white border-[3px] border-[#3D2314] rounded-full px-4 py-1 shadow-[0_3px_0_#3D2314] flex items-center gap-2 transition-all duration-200">
+          <span class="text-xs font-extrabold uppercase text-[#7A4B32]">On Plate:</span>
+          <span id="current-count-display" class="font-fredoka font-bold text-xl sm:text-2xl text-[#3D2314]">
+            0 / 12
+          </span>
+        </div>
+      </div>
+
+      <!-- Center Visual Stacking Area + Left/Right Tools -->
+      <div class="flex-1 flex items-end justify-between gap-1.5 relative my-1 min-h-0">
+        <!-- Left Tool: Undo Last Tray -->
+        <div class="flex flex-col items-center justify-end pb-3 z-10 w-16 shrink-0">
+          <button id="btn-undo" disabled class="btn-tactile btn-tool w-14 h-14 rounded-2xl flex flex-col items-center justify-center">
+            <span class="text-lg leading-none">↩️</span>
+            <span class="text-[11px] font-black mt-0.5">Undo</span>
+          </button>
+        </div>
+
+        <!-- Center Plate & Treat Stack -->
+        <div class="flex-1 h-full flex flex-col items-center justify-end relative pb-2 overflow-hidden">
+          <!-- Floating Particle/Score Container -->
+          <div id="fx-layer" class="absolute inset-0 pointer-events-none flex items-center justify-center z-30"></div>
+
+          <!-- Visual Stack Container (grows upward from plate) -->
+          <div id="treat-stack-container" class="w-full max-w-[205px] flex flex-col-reverse items-center justify-start gap-1.5 pb-1.5 z-10 max-h-[210px] overflow-y-auto no-scrollbar">
+            <!-- Stacked treat layers render here -->
+          </div>
+
+          <!-- Empty State Hint -->
+          <div id="empty-plate-hint" class="text-xs font-extrabold text-[#9C6F44] bg-[#FFF8E7]/80 border-2 border-dashed border-[#C89B6E] rounded-xl px-3 py-1.5 mb-2 text-center">
+            Tap trays below to stack!
+          </div>
+
+          <!-- Ceramic Serving Plate -->
+          <div class="w-48 sm:w-52 h-5 bg-white border-[3px] border-[#3D2314] rounded-[50%] shadow-[0_5px_0_#C49A6C,0_8px_0_#3D2314] relative flex items-center justify-center shrink-0">
+            <div class="w-36 h-2 border-b-2 border-[#E5E7EB] rounded-[50%]"></div>
+          </div>
+        </div>
+
+        <!-- Right Tools: Subtraction (Take Away) -->
+        <div class="flex flex-col items-center justify-end gap-2 pb-3 z-10 w-16 shrink-0">
+          <button id="btn-sub-1" disabled title="Spatula: Take away 1" class="btn-tactile btn-tool w-14 h-13 py-1.5 rounded-2xl flex flex-col items-center justify-center bg-[#FFF0F3]">
+            <div class="flex items-center gap-0.5">
+              <span class="text-base leading-none">🥄</span>
+              <span class="font-fredoka font-bold text-sm text-[#D94868]">-1</span>
+            </div>
+            <span class="text-[10px] font-extrabold text-[#7A4B32]">Scoop</span>
+          </button>
+
+          <button id="btn-sub-3" disabled title="Bakery Mouse: Nibble 3" class="btn-tactile btn-tool w-14 h-13 py-1.5 rounded-2xl flex flex-col items-center justify-center bg-[#FFF0F3]">
+            <div class="flex items-center gap-0.5">
+              <span class="text-base leading-none">🐭</span>
+              <span class="font-fredoka font-bold text-sm text-[#D94868]">-3</span>
+            </div>
+            <span class="text-[10px] font-extrabold text-[#7A4B32]">Nibble</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. BOTTOM ZONE: ACTION DOCK (TRAYS & SERVE) -->
+    <section class="bg-[#FFF8E7] border-t-[4px] border-[#3D2314] px-3 pt-2.5 pb-3.5 shrink-0 z-20">
+      <!-- Three Tactile Wooden Tray Buttons -->
+      <div class="grid grid-cols-3 gap-2.5 mb-2.5">
+        <!-- Tray 2 -->
+        <button data-tray="2" class="tray-btn btn-tactile btn-tray rounded-2xl p-2 flex flex-col items-center justify-between h-24">
+          <div class="flex items-center justify-center gap-1.5 h-10 w-full" id="tray-visual-2">
+            <!-- 2 pattern icons -->
+          </div>
+          <span class="font-fredoka font-bold text-xl leading-none bg-white/90 border-2 border-[#3D2314] rounded-lg px-2.5 py-0.5">
+            +2
+          </span>
+        </button>
+
+        <!-- Tray 5 -->
+        <button data-tray="5" class="tray-btn btn-tactile btn-tray rounded-2xl p-2 flex flex-col items-center justify-between h-24">
+          <div class="flex flex-wrap items-center justify-center gap-1 h-10 w-16" id="tray-visual-5">
+            <!-- 5 dice pattern icons -->
+          </div>
+          <span class="font-fredoka font-bold text-xl leading-none bg-white/90 border-2 border-[#3D2314] rounded-lg px-2.5 py-0.5">
+            +5
+          </span>
+        </button>
+
+        <!-- Tray 10 -->
+        <button data-tray="10" class="tray-btn btn-tactile btn-tray rounded-2xl p-2 flex flex-col items-center justify-between h-24">
+          <div class="grid grid-cols-5 gap-0.5 items-center justify-center h-10 w-full px-1" id="tray-visual-10">
+            <!-- 10 ten-frame pattern icons -->
+          </div>
+          <span class="font-fredoka font-bold text-xl leading-none bg-white/90 border-2 border-[#3D2314] rounded-lg px-2.5 py-0.5">
+            +10
+          </span>
+        </button>
+      </div>
+
+      <!-- Giant Serve Bell CTA Button -->
+      <button id="btn-serve" class="btn-tactile btn-serve-idle w-full py-3 rounded-2xl flex items-center justify-center gap-2.5 font-fredoka font-bold text-xl sm:text-2xl tracking-wide text-[#3D2314]">
+        <span class="text-2xl">🔔</span>
+        <span>SERVE ORDER!</span>
+      </button>
+    </section>
+
+    <!-- 5. BONUS MINI-GAME OVERLAY: CAKE DECORATING STUDIO -->
+    <div id="cake-bonus-modal" class="hidden absolute inset-0 bg-[#3D2314]/80 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div class="bg-[#FFF8E7] border-[4px] border-[#3D2314] rounded-3xl w-full max-w-[340px] p-4 shadow-[0_10px_0_#3D2314] flex flex-col items-center text-center customer-enter">
+        <span class="bg-[#FF6B8B] text-white font-fredoka font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-[#3D2314]">
+          🎉 VIP Cake Bonus!
+        </span>
+        <h2 class="font-fredoka font-bold text-2xl mt-1.5 text-[#3D2314]">Decorate the Cake!</h2>
+        <p class="text-xs font-extrabold text-[#7A4B32]">Tap toppings below to earn +15 Tip Coins!</p>
+
+        <!-- Interactive SVG Cake Preview -->
+        <div class="my-3 w-48 h-40 bg-white border-[3px] border-[#3D2314] rounded-2xl flex items-center justify-center relative shadow-inner">
+          <svg id="bonus-cake-svg" viewBox="0 0 200 160" class="w-44 h-36">
+            <!-- Cake Plate -->
+            <ellipse cx="100" cy="142" rx="82" ry="12" fill="#E5E7EB" stroke="#3D2314" stroke-width="4"/>
+            <!-- Cake Base -->
+            <rect x="36" y="82" width="128" height="56" rx="12" fill="#F4A261" stroke="#3D2314" stroke-width="4"/>
+            <!-- Frosting Layer (Dynamic Color) -->
+            <path id="cake-frosting" d="M34 86 Q34 72 50 72 L150 72 Q166 72 166 86 L166 102 Q156 112 146 102 Q136 112 126 102 Q116 112 106 102 Q96 112 86 102 Q76 112 66 102 Q56 112 46 102 Q36 112 34 102 Z" fill="#FF6B8B" stroke="#3D2314" stroke-width="4"/>
+            <!-- Sprinkles Group -->
+            <g id="cake-sprinkles" class="hidden">
+              <rect x="52" y="80" width="8" height="4" rx="2" fill="#FFD166" transform="rotate(20 52 80)"/>
+              <rect x="78" y="84" width="8" height="4" rx="2" fill="#4ECDC4" transform="rotate(-15 78 84)"/>
+              <rect x="105" y="79" width="8" height="4" rx="2" fill="#FFF" transform="rotate(35 105 79)"/>
+              <rect x="132" y="83" width="8" height="4" rx="2" fill="#FFD166" transform="rotate(-25 132 83)"/>
+              <rect x="65" y="92" width="8" height="4" rx="2" fill="#FFF" transform="rotate(-10 65 92)"/>
+              <rect x="118" y="92" width="8" height="4" rx="2" fill="#4ECDC4" transform="rotate(15 118 92)"/>
+            </g>
+            <!-- Topper Group -->
+            <g id="cake-topper">
+              <!-- Default Strawberry -->
+              <path d="M90 54 Q100 42 110 54 Q112 70 100 74 Q88 70 90 54 Z" fill="#E63946" stroke="#3D2314" stroke-width="3"/>
+              <path d="M92 52 L100 46 L108 52" fill="none" stroke="#2A9D8F" stroke-width="3" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Decorator Controls -->
+        <div class="grid grid-cols-3 gap-2 w-full mb-3">
+          <button id="deco-frosting" class="btn-tactile bg-[#FF6B8B] text-white rounded-xl py-2 px-1 text-xs font-black shadow-[0_3px_0_#3D2314]">
+            🍓 Frosting
+          </button>
+          <button id="deco-sprinkles" class="btn-tactile bg-[#4ECDC4] text-[#3D2314] rounded-xl py-2 px-1 text-xs font-black shadow-[0_3px_0_#3D2314]">
+            ✨ Sprinkles
+          </button>
+          <button id="deco-topper" class="btn-tactile bg-[#FFD166] text-[#3D2314] rounded-xl py-2 px-1 text-xs font-black shadow-[0_3px_0_#3D2314]">
+            👑 Topper
+          </button>
+        </div>
+
+        <button id="btn-finish-cake" class="btn-tactile btn-serve-ready w-full py-2.5 rounded-2xl font-fredoka font-bold text-lg text-[#3D2314]">
+          🎁 Collect +15 Coins!
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    /**
+     * ============================================================================
+     * NUMBER BAKERY - INTERACTIVE PROTOTYPE ENGINE
+     * ============================================================================
+     */
+
+    // --- 1. WEB AUDIO SYNTHESIZER (Zero External Assets) ---
+    class SoundEffects {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        return this.muted;
+      }
+
+      // Soft doughy pop with rising pitch as stack approaches target
+      playPop(ratio = 0.5) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        const baseFreq = 260 + Math.min(ratio, 1.3) * 280;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.45, now + 0.09);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      }
+
+      // Swoosh / nibble sound on undo or subtract
+      playSwoosh() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(380, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      // Crisp Bakery Service Bell "DING!" + Happy Chime
+      playServeSuccess() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [1046.5, 1318.5, 1568.0]; // C6, E6, G6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+          gain.gain.setValueAtTime(0.22, now + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.45);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 0.46);
+        });
+      }
+
+      // Gentle comical wobble when over/under
+      playWobble() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(190, now);
+        osc.frequency.linearRampToValueAtTime(145, now + 0.12);
+        osc.frequency.linearRampToValueAtTime(175, now + 0.24);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+
+      // Coin jingle
+      playCoin() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        [987.77, 1318.51].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.07);
+          gain.gain.setValueAtTime(0.18, now + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.07);
+          osc.stop(now + i * 0.07 + 0.26);
+        });
+      }
+    }
+
+    const sfx = new SoundEffects();
+
+    // --- 2. SVG ASSET GENERATORS (Cute Characters & Treats) ---
+    const CUSTOMERS = [
+      {
+        name: 'Barnaby Bear',
+        bg: '#FFE5B4',
+        svg: `<svg viewBox="0 0 100 100" class="w-16 h-16">
+          <circle cx="26" cy="28" r="14" fill="#8D5524" stroke="#3D2314" stroke-width="4"/>
+          <circle cx="74" cy="28" r="14" fill="#8D5524" stroke="#3D2314" stroke-width="4"/>
+          <circle cx="50" cy="54" r="34" fill="#A86B38" stroke="#3D2314" stroke-width="4"/>
+          <ellipse cx="50" cy="64" rx="16" ry="12" fill="#F3D2B3"/>
+          <circle cx="38" cy="48" r="4.5" fill="#3D2314"/>
+          <circle cx="62" cy="48" r="4.5" fill="#3D2314"/>
+          <ellipse cx="50" cy="59" rx="6" ry="4" fill="#3D2314"/>
+          <path d="M43 68 Q50 75 57 68" fill="none" stroke="#3D2314" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>`
+      },
+      {
+        name: 'Foxy Fiona',
+        bg: '#FFD6BA',
+        svg: `<svg viewBox="0 0 100 100" class="w-16 h-16">
+          <polygon points="20,42 26,14 46,32" fill="#F26419" stroke="#3D2314" stroke-width="4" stroke-linejoin="round"/>
+          <polygon points="80,42 74,14 54,32" fill="#F26419" stroke="#3D2314" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="50" cy="56" r="32" fill="#F26419" stroke="#3D2314" stroke-width="4"/>
+          <path d="M22 56 Q36 56 50 72 Q64 56 78 56 Q72 84 50 86 Q28 84 22 56 Z" fill="#FFFDF7"/>
+          <circle cx="38" cy="50" r="4.5" fill="#3D2314"/>
+          <circle cx="62" cy="50" r="4.5" fill="#3D2314"/>
+          <circle cx="50" cy="64" r="5" fill="#3D2314"/>
+          <path d="M44 72 Q50 77 56 72" fill="none" stroke="#3D2314" stroke-width="3" stroke-linecap="round"/>
+        </svg>`
+      },
+      {
+        name: 'Beep-Boop Bot',
+        bg: '#D8F3DC',
+        svg: `<svg viewBox="0 0 100 100" class="w-16 h-16">
+          <line x1="50" y1="12" x2="50" y2="26" stroke="#3D2314" stroke-width="4"/>
+          <circle cx="50" cy="11" r="6" fill="#FF6B8B" stroke="#3D2314" stroke-width="3"/>
+          <rect x="22" y="26" width="56" height="52" rx="14" fill="#90E0EF" stroke="#3D2314" stroke-width="4"/>
+          <rect x="30" y="38" width="40" height="20" rx="6" fill="#3D2314"/>
+          <circle cx="40" cy="48" r="4.5" fill="#FFD166"/>
+          <circle cx="60" cy="48" r="4.5" fill="#FFD166"/>
+          <path d="M38 66 L62 66" stroke="#3D2314" stroke-width="4" stroke-linecap="round"/>
+        </svg>`
+      },
+      {
+        name: 'Pippa Bunny',
+        bg: '#FCE1E4',
+        svg: `<svg viewBox="0 0 100 100" class="w-16 h-16">
+          <rect x="30" y="8" width="14" height="36" rx="7" fill="#FFFDF7" stroke="#3D2314" stroke-width="4"/>
+          <rect x="56" y="8" width="14" height="36" rx="7" fill="#FFFDF7" stroke="#3D2314" stroke-width="4"/>
+          <circle cx="50" cy="60" r="30" fill="#FFFDF7" stroke="#3D2314" stroke-width="4"/>
+          <circle cx="38" cy="54" r="4" fill="#3D2314"/>
+          <circle cx="62" cy="54" r="4" fill="#3D2314"/>
+          <circle cx="32" cy="63" r="4" fill="#FF9AA2"/>
+          <circle cx="68" cy="63" r="4" fill="#FF9AA2"/>
+          <polygon points="46,62 54,62 50,67" fill="#FF6B8B"/>
+          <path d="M44 71 Q50 76 56 71" fill="none" stroke="#3D2314" stroke-width="3" stroke-linecap="round"/>
+        </svg>`
+      },
+      {
+        name: 'Chef Bao Panda',
+        bg: '#E2ECE9',
+        svg: `<svg viewBox="0 0 100 100" class="w-16 h-16">
+          <circle cx="26" cy="30" r="12" fill="#3D2314"/>
+          <circle cx="74" cy="30" r="12" fill="#3D2314"/>
+          <circle cx="50" cy="56" r="32" fill="#FFFDF7" stroke="#3D2314" stroke-width="4"/>
+          <ellipse cx="37" cy="52" rx="8" ry="10" fill="#3D2314" transform="rotate(-15 37 52)"/>
+          <ellipse cx="63" cy="52" rx="8" ry="10" fill="#3D2314" transform="rotate(15 63 52)"/>
+          <circle cx="38" cy="51" r="3" fill="#FFF"/>
+          <circle cx="62" cy="51" r="3" fill="#FFF"/>
+          <ellipse cx="50" cy="63" rx="5" ry="3.5" fill="#3D2314"/>
+          <path d="M44 70 Q50 75 56 70" fill="none" stroke="#3D2314" stroke-width="3" stroke-linecap="round"/>
+        </svg>`
+      }
+    ];
+
+    const TREATS = {
+      cookie: {
+        name: 'Cookies!',
+        singular: 'Cookie',
+        getMiniSVG: (size = 18) => `
+          <svg width="${size}" height="${size}" viewBox="0 0 32 32" class="shrink-0">
+            <circle cx="16" cy="16" r="13" fill="#E09F5A" stroke="#3D2314" stroke-width="3"/>
+            <circle cx="11" cy="12" r="2.2" fill="#3D2314"/>
+            <circle cx="20" cy="11" r="2" fill="#3D2314"/>
+            <circle cx="16" cy="19" r="2.4" fill="#3D2314"/>
+            <circle cx="10" cy="21" r="1.8" fill="#3D2314"/>
+          </svg>`
+      },
+      cupcake: {
+        name: 'Cupcakes!',
+        singular: 'Cupcake',
+        getMiniSVG: (size = 18) => `
+          <svg width="${size}" height="${size}" viewBox="0 0 32 32" class="shrink-0">
+            <polygon points="8,17 24,17 21,28 11,28" fill="#4ECDC4" stroke="#3D2314" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M6 17 Q6 8 16 8 Q26 8 26 17 Z" fill="#FF6B8B" stroke="#3D2314" stroke-width="2.5"/>
+            <circle cx="16" cy="6" r="3" fill="#FFD166" stroke="#3D2314" stroke-width="2"/>
+          </svg>`
+      },
+      donut: {
+        name: 'Donuts!',
+        singular: 'Donut',
+        getMiniSVG: (size = 18) => `
+          <svg width="${size}" height="${size}" viewBox="0 0 32 32" class="shrink-0">
+            <circle cx="16" cy="16" r="13" fill="#F4A261" stroke="#3D2314" stroke-width="3"/>
+            <path d="M4 15 Q9 19 16 15 Q23 19 28 15 A13 13 0 0 0 4 15 Z" fill="#FF6B8B"/>
+            <circle cx="16" cy="16" r="4.5" fill="#FFF8E7" stroke="#3D2314" stroke-width="2.5"/>
+          </svg>`
+      }
+    };
+
+    // --- 3. GAME STATE & ORDER CURRICULUM ---
+    const state = {
+      coins: 0,
+      orderIndex: 0, // 0-based order count
+      level: 1,
+      mathHelper: true,
+      currentTreatType: 'cookie',
+      targetCount: 12,
+      // Stack is an array of layer objects: { id, count, sourceTray }
+      // sourceTray is 2, 5, or 10; count can be reduced by -1 or -3 tools!
+      stack: [],
+      isTwistOrder: false,
+      twistText: '',
+      timerPercent: 100,
+      timerInterval: null,
+      isTransitioning: false,
+      cakeState: {
+        frostingIdx: 0,
+        sprinkles: false,
+        topperIdx: 0
+      }
+    };
+
+    // Curated kid-friendly progression (7-10 yrs: skip counting, addition, and subtraction)
+    const ORDER_PRESETS = [
+      { target: 12, treat: 'cookie', twist: false, sub: 'Try 10 + 2!' },
+      { target: 15, treat: 'cookie', twist: false, sub: 'Skip-count by 5s!' },
+      { target: 9,  treat: 'cupcake', twist: true, sub: 'Tip: Make 10, take away 1!' },
+      { target: 17, treat: 'cupcake', twist: false, sub: 'Stack 10 + 5 + 2!' },
+      { target: 14, treat: 'donut', twist: true, sub: 'Tip: Make 15, take away 1!' },
+      { target: 22, treat: 'donut', twist: false, sub: 'Two 10s and a 2!' },
+      { target: 19, treat: 'cookie', twist: true, sub: 'Tip: Make 20, take away 1!' },
+      { target: 24, treat: 'cupcake', twist: false, sub: 'Build up to 24!' },
+      { target: 17, treat: 'donut', twist: true, sub: 'Tip: Make 20, nibble 3!' }
+    ];
+
+    const LEVEL_TITLES = [
+      'Lvl 1: Cookie Rush',
+      'Lvl 2: Cupcake Craze',
+      'Lvl 3: Donut Master',
+      'Lvl 4: Star Baker'
+    ];
+
+    // --- 4. DOM REFERENCES ---
+    const elCoins = document.getElementById('hud-coins');
+    const elLevel = document.getElementById('hud-level');
+    const elBtnHelper = document.getElementById('btn-helper-toggle');
+    const elHelperLabel = document.getElementById('helper-label');
+    const elBtnSound = document.getElementById('btn-sound-toggle');
+
+    const elTimerBar = document.getElementById('oven-timer-bar');
+    const elBonusTag = document.getElementById('oven-bonus-tag');
+    const elCustomerAvatar = document.getElementById('customer-avatar');
+    const elCustomerName = document.getElementById('customer-name');
+    const elOrderTag = document.getElementById('order-tag');
+    const elTwistBadge = document.getElementById('twist-badge');
+    const elTargetNum = document.getElementById('order-target-number');
+    const elTreatName = document.getElementById('order-treat-name');
+    const elOrderSubtext = document.getElementById('order-subtext');
+    const elOrderTreatIcon = document.getElementById('order-treat-icon');
+    const elSpeechFeedback = document.getElementById('customer-speech-feedback');
+
+    const elLiveBadge = document.getElementById('live-counter-badge');
+    const elCurrentCount = document.getElementById('current-count-display');
+    const elStackContainer = document.getElementById('treat-stack-container');
+    const elEmptyHint = document.getElementById('empty-plate-hint');
+    const elFxLayer = document.getElementById('fx-layer');
+
+    const elBtnUndo = document.getElementById('btn-undo');
+    const elBtnSub1 = document.getElementById('btn-sub-1');
+    const elBtnSub3 = document.getElementById('btn-sub-3');
+    const elBtnServe = document.getElementById('btn-serve');
+
+    // --- 5. HELPER FUNCTIONS ---
+    function getTotalCount() {
+      return state.stack.reduce((sum, layer) => sum + layer.count, 0);
+    }
+
+    function spawnFloatingText(text, color = '#3D2314') {
+      const div = document.createElement('div');
+      div.className = 'floating-feedback font-fredoka font-bold text-2xl px-3 py-1 rounded-full bg-white/95 border-2 border-[#3D2314] shadow-md';
+      div.style.color = color;
+      div.textContent = text;
+      elFxLayer.appendChild(div);
+      setTimeout(() => div.remove(), 950);
+    }
+
+    function renderTrayButtonsVisuals() {
+      const treat = TREATS[state.currentTreatType];
+
+      // Tray 2
+      const v2 = document.getElementById('tray-visual-2');
+      v2.innerHTML = treat.getMiniSVG(20) + treat.getMiniSVG(20);
+
+      // Tray 5 (Dice 5 pattern)
+      const v5 = document.getElementById('tray-visual-5');
+      v5.innerHTML = `
+        <div class="flex justify-between w-12">${treat.getMiniSVG(13)}${treat.getMiniSVG(13)}</div>
+        <div class="flex justify-center w-12 -my-1">${treat.getMiniSVG(13)}</div>
+        <div class="flex justify-between w-12">${treat.getMiniSVG(13)}${treat.getMiniSVG(13)}</div>
+      `;
+
+      // Tray 10 (Ten-frame 5x2 grid)
+      const v10 = document.getElementById('tray-visual-10');
+      let html10 = '';
+      for (let i = 0; i < 10; i++) {
+        html10 += `<div class="flex justify-center">${treat.getMiniSVG(12)}</div>`;
+      }
+      v10.innerHTML = html10;
+    }
+
+    function startOvenTimer() {
+      clearInterval(state.timerInterval);
+      state.timerPercent = 100;
+      elTimerBar.style.width = '100%';
+      elTimerBar.style.backgroundColor = '#4ECDC4';
+      elBonusTag.textContent = '+5 Tip';
+      elBonusTag.classList.remove('opacity-40');
+
+      state.timerInterval = setInterval(() => {
+        if (state.isTransitioning) return;
+        // Gentle pace suitable for 7-10 year olds (~28 seconds full bar)
+        state.timerPercent -= 0.7;
+        if (state.timerPercent <= 0) {
+          state.timerPercent = 100;
+          elSpeechFeedback.textContent = `"No rush! Take your time baking!"`;
+          elSpeechFeedback.style.color = '#7A4B32';
+          elBonusTag.textContent = '+2 Tip';
+        }
+
+        elTimerBar.style.width = `${Math.max(5, state.timerPercent)}%`;
+        if (state.timerPercent > 50) {
+          elTimerBar.style.backgroundColor = '#4ECDC4';
+          elBonusTag.textContent = '+5 Tip';
+        } else if (state.timerPercent > 20) {
+          elTimerBar.style.backgroundColor = '#FFD166';
+          elBonusTag.textContent = '+3 Tip';
+        } else {
+          elTimerBar.style.backgroundColor = '#FF6B8B';
+          elBonusTag.textContent = '+1 Tip';
+        }
+      }, 200);
+    }
+
+    // --- 6. LOAD ORDER & RENDER UI ---
+    function loadOrder(index) {
+      state.isTransitioning = false;
+      state.stack = [];
+
+      // Pick preset or generate procedural order for endless play
+      let orderData;
+      if (index < ORDER_PRESETS.length) {
+        orderData = ORDER_PRESETS[index];
+      } else {
+        const treatKeys = ['cookie', 'cupcake', 'donut'];
+        const tKey = treatKeys[index % treatKeys.length];
+        const isTwist = index % 2 === 1;
+        const target = Math.floor(Math.random() * 18) + 11; // 11 to 28
+        orderData = {
+          target,
+          treat: tKey,
+          twist: isTwist,
+          sub: isTwist ? 'Use trays + scoop/nibble!' : 'Match the exact number!'
+        };
+      }
+
+      state.targetCount = orderData.target;
+      state.currentTreatType = orderData.treat;
+      state.isTwistOrder = orderData.twist;
+      state.level = Math.min(LEVEL_TITLES.length, Math.floor(index / 3) + 1);
+
+      // Customer selection
+      const customer = CUSTOMERS[index % CUSTOMERS.length];
+      elCustomerAvatar.innerHTML = customer.svg;
+      elCustomerAvatar.style.backgroundColor = customer.bg;
+      elCustomerAvatar.classList.remove('customer-enter');
+      void elCustomerAvatar.offsetWidth; // trigger reflow
+      elCustomerAvatar.classList.add('customer-enter');
+      elCustomerName.textContent = customer.name;
+
+      // Update Order Bubble
+      elLevel.textContent = LEVEL_TITLES[state.level - 1];
+      elOrderTag.textContent = `Order #${index + 1}`;
+      elTargetNum.textContent = state.targetCount;
+      elTreatName.textContent = TREATS[state.currentTreatType].name;
+      elOrderSubtext.textContent = orderData.sub;
+      elOrderTreatIcon.innerHTML = TREATS[state.currentTreatType].getMiniSVG(36);
+
+      if (state.isTwistOrder) {
+        elTwistBadge.classList.remove('hidden');
+        elSpeechFeedback.textContent = `"Psst! Try overshooting & using -1 or -3!"`;
+        elSpeechFeedback.style.color = '#D94868';
+      } else {
+        elTwistBadge.classList.add('hidden');
+        elSpeechFeedback.textContent = `"Can I have ${state.targetCount} ${TREATS[state.currentTreatType].name.toLowerCase()}"`;
+        elSpeechFeedback.style.color = '#2EA89F';
+      }
+
+      renderTrayButtonsVisuals();
+      updateStackUI();
+      startOvenTimer();
+    }
+
+    function updateStackUI(animateNewest = false) {
+      const total = getTotalCount();
+      const target = state.targetCount;
+      const treat = TREATS[state.currentTreatType];
+
+      // 1. Update Live Counter Badge
+      if (state.mathHelper) {
+        elLiveBadge.classList.remove('opacity-0', 'pointer-events-none');
+        elCurrentCount.textContent = `${total} / ${target}`;
+      } else {
+        elLiveBadge.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      // Badge color feedback
+      elLiveBadge.classList.remove('bg-[#4ECDC4]', 'bg-[#FF6B8B]', 'text-white', 'bg-white', 'scale-105');
+      if (total === target) {
+        elLiveBadge.classList.add('bg-[#4ECDC4]', 'scale-105');
+      } else if (total > target) {
+        elLiveBadge.classList.add('bg-[#FF6B8B]', 'text-white');
+      } else {
+        elLiveBadge.classList.add('bg-white');
+      }
+
+      // 2. Update Serve Button State
+      if (total === target) {
+        elBtnServe.classList.remove('btn-serve-idle');
+        elBtnServe.classList.add('btn-serve-ready');
+      } else {
+        elBtnServe.classList.add('btn-serve-idle');
+        elBtnServe.classList.remove('btn-serve-ready');
+      }
+
+      // 3. Enable/Disable Side Tools
+      elBtnUndo.disabled = state.stack.length === 0;
+      elBtnSub1.disabled = total < 1;
+      elBtnSub3.disabled = total < 3;
+
+      // 4. Render Stacked Layers on Plate
+      if (state.stack.length === 0) {
+        elEmptyHint.classList.remove('hidden');
+        elStackContainer.innerHTML = '';
+        return;
+      }
+
+      elEmptyHint.classList.add('hidden');
+      elStackContainer.innerHTML = '';
+
+      state.stack.forEach((layer, idx) => {
+        const isTop = idx === state.stack.length - 1;
+        const layerEl = document.createElement('div');
+        layerEl.className = `w-full bg-[#FFFDF7] border-[2.5px] border-[#3D2314] rounded-xl px-2 py-1 shadow-[0_2px_0_#3D2314] flex items-center justify-between gap-1 ${isTop && animateNewest ? 'treat-layer-enter' : ''}`;
+
+        // Group badge
+        const badge = document.createElement('span');
+        badge.className = 'font-fredoka font-bold text-xs bg-[#FFD166] border border-[#3D2314] rounded-md px-1.5 py-0.2 shrink-0';
+        badge.textContent = `${layer.count}`;
+
+        // Visual mini treats inside this layer
+        const iconsWrap = document.createElement('div');
+        iconsWrap.className = 'flex flex-wrap items-center justify-center gap-0.5 flex-1';
+        let iconsHTML = '';
+        for (let i = 0; i < layer.count; i++) {
+          iconsHTML += treat.getMiniSVG(layer.count > 5 ? 14 : 17);
+        }
+        iconsWrap.innerHTML = iconsHTML;
+
+        layerEl.appendChild(badge);
+        layerEl.appendChild(iconsWrap);
+        elStackContainer.appendChild(layerEl);
+      });
+
+      // Auto-scroll stack to top item
+      elStackContainer.scrollTop = -elStackContainer.scrollHeight;
+    }
+
+    // --- 7. CORE PLAYER ACTIONS ---
+    function handleAddTray(amount) {
+      if (state.isTransitioning) return;
+      const currentTotal = getTotalCount();
+      if (currentTotal + amount > 40) {
+        spawnFloatingText('Plate Full!', '#D94868');
+        sfx.playWobble();
+        return;
+      }
+
+      state.stack.push({
+        id: Date.now() + Math.random(),
+        count: amount,
+        sourceTray: amount
+      });
+
+      const newTotal = getTotalCount();
+      sfx.playPop(newTotal / state.targetCount);
+      spawnFloatingText(`+${amount}`, '#2EA89F');
+      updateStackUI(true);
+
+      // Helpful reactive customer hints
+      if (newTotal === state.targetCount) {
+        elSpeechFeedback.textContent = `"Ooh! That looks exact! Ring the bell!"`;
+        elSpeechFeedback.style.color = '#2EA89F';
+      } else if (newTotal > state.targetCount) {
+        const diff = newTotal - state.targetCount;
+        elSpeechFeedback.textContent = `"Whoa, ${diff} too many! Use Undo or -1 / -3!"`;
+        elSpeechFeedback.style.color = '#D94868';
+        elStackContainer.classList.remove('animate-wobble');
+        void elStackContainer.offsetWidth;
+        elStackContainer.classList.add('animate-wobble');
+      } else {
+        elSpeechFeedback.textContent = `"Keep stacking! Almost there..."`;
+        elSpeechFeedback.style.color = '#7A4B32';
+      }
+    }
+
+    function handleUndo() {
+      if (state.isTransitioning || state.stack.length === 0) return;
+      const removed = state.stack.pop();
+      sfx.playSwoosh();
+      spawnFloatingText(`-${removed.count}`, '#7A4B32');
+      updateStackUI(false);
+    }
+
+    function handleSubtract(amount) {
+      if (state.isTransitioning) return;
+      let remainingToRemove = amount;
+      if (getTotalCount() < remainingToRemove) return;
+
+      // Remove treats from the top layers downward
+      while (remainingToRemove > 0 && state.stack.length > 0) {
+        const topLayer = state.stack[state.stack.length - 1];
+        if (topLayer.count > remainingToRemove) {
+          topLayer.count -= remainingToRemove;
+          remainingToRemove = 0;
+        } else {
+          remainingToRemove -= topLayer.count;
+          state.stack.pop();
+        }
+      }
+
+      sfx.playSwoosh();
+      spawnFloatingText(amount === 1 ? '🥄 -1' : '🐭 -3', '#D94868');
+      updateStackUI(true);
+
+      const newTotal = getTotalCount();
+      if (newTotal === state.targetCount) {
+        elSpeechFeedback.textContent = `"Perfect fix! Ready to serve!"`;
+        elSpeechFeedback.style.color = '#2EA89F';
+      }
+    }
+
+    function handleServeOrder() {
+      if (state.isTransitioning) return;
+      const total = getTotalCount();
+      const target = state.targetCount;
+
+      if (total < target) {
+        const needed = target - total;
+        sfx.playWobble();
+        elSpeechFeedback.textContent = `"Wait! I still need ${needed} more!"`;
+        elSpeechFeedback.style.color = '#D94868';
+        elStackContainer.classList.remove('animate-wobble');
+        void elStackContainer.offsetWidth;
+        elStackContainer.classList.add('animate-wobble');
+        return;
+      }
+
+      if (total > target) {
+        const extra = total - target;
+        sfx.playWobble();
+        elSpeechFeedback.textContent = `"Too many! Take away ${extra} first!"`;
+        elSpeechFeedback.style.color = '#D94868';
+        elStackContainer.classList.remove('animate-wobble');
+        void elStackContainer.offsetWidth;
+        elStackContainer.classList.add('animate-wobble');
+        return;
+      }
+
+      // EXACT MATCH! Celebrate!
+      state.isTransitioning = true;
+      clearInterval(state.timerInterval);
+      sfx.playServeSuccess();
+
+      const speedTip = state.timerPercent > 50 ? 5 : state.timerPercent > 20 ? 3 : 1;
+      const earned = 10 + speedTip;
+      state.coins += earned;
+      elCoins.textContent = state.coins;
+
+      elSpeechFeedback.textContent = `"YUM!! Exact match! +${earned} Tip Coins!"`;
+      elSpeechFeedback.style.color = '#2EA89F';
+      spawnFloatingText(`⭐ +${earned} Coins!`, '#E0A82E');
+
+      setTimeout(() => {
+        sfx.playCoin();
+      }, 220);
+
+      state.orderIndex += 1;
+
+      // Every 3rd completed order triggers the VIP Cake Decorating Bonus!
+      setTimeout(() => {
+        if (state.orderIndex % 3 === 0) {
+          openCakeBonusModal();
+        } else {
+          loadOrder(state.orderIndex);
+        }
+      }, 1150);
+    }
+
+    // --- 8. CAKE DECORATING BONUS MINI-GAME ---
+    const cakeModal = document.getElementById('cake-bonus-modal');
+    const cakeFrostingEl = document.getElementById('cake-frosting');
+    const cakeSprinklesEl = document.getElementById('cake-sprinkles');
+    const cakeTopperEl = document.getElementById('cake-topper');
+
+    const FROSTING_COLORS = ['#FF6B8B', '#4ECDC4', '#FFD166', '#B388EB', '#FFFDF7'];
+    const TOPPERS = [
+      // Strawberry
+      `<path d="M90 54 Q100 42 110 54 Q112 70 100 74 Q88 70 90 54 Z" fill="#E63946" stroke="#3D2314" stroke-width="3"/>
+       <path d="M92 52 L100 46 L108 52" fill="none" stroke="#2A9D8F" stroke-width="3" stroke-linecap="round"/>`,
+      // Crown
+      `<polygon points="82,70 85,48 94,58 100,44 106,58 115,48 118,70" fill="#FFD166" stroke="#3D2314" stroke-width="3" stroke-linejoin="round"/>`,
+      // Birthday Candle
+      `<rect x="95" y="46" width="10" height="24" rx="2" fill="#4ECDC4" stroke="#3D2314" stroke-width="3"/>
+       <path d="M100 32 Q106 40 100 45 Q94 40 100 32 Z" fill="#FF9F1C" stroke="#3D2314" stroke-width="2"/>`
+    ];
+
+    function openCakeBonusModal() {
+      cakeModal.classList.remove('hidden');
+    }
+
+    document.getElementById('deco-frosting').addEventListener('click', () => {
+      sfx.playPop(0.8);
+      state.cakeState.frostingIdx = (state.cakeState.frostingIdx + 1) % FROSTING_COLORS.length;
+      cakeFrostingEl.setAttribute('fill', FROSTING_COLORS[state.cakeState.frostingIdx]);
+    });
+
+    document.getElementById('deco-sprinkles').addEventListener('click', () => {
+      sfx.playPop(1.0);
+      state.cakeState.sprinkles = !state.cakeState.sprinkles;
+      cakeSprinklesEl.classList.toggle('hidden', !state.cakeState.sprinkles);
+    });
+
+    document.getElementById('deco-topper').addEventListener('click', () => {
+      sfx.playPop(1.2);
+      state.cakeState.topperIdx = (state.cakeState.topperIdx + 1) % TOPPERS.length;
+      cakeTopperEl.innerHTML = TOPPERS[state.cakeState.topperIdx];
+    });
+
+    document.getElementById('btn-finish-cake').addEventListener('click', () => {
+      sfx.playCoin();
+      state.coins += 15;
+      elCoins.textContent = state.coins;
+      cakeModal.classList.add('hidden');
+      loadOrder(state.orderIndex);
+    });
+
+    // --- 9. EVENT LISTENERS ---
+    document.querySelectorAll('.tray-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.getAttribute('data-tray'), 10);
+        handleAddTray(val);
+      });
+    });
+
+    elBtnUndo.addEventListener('click', handleUndo);
+    elBtnSub1.addEventListener('click', () => handleSubtract(1));
+    elBtnSub3.addEventListener('click', () => handleSubtract(3));
+    elBtnServe.addEventListener('click', handleServeOrder);
+
+    elBtnHelper.addEventListener('click', () => {
+      state.mathHelper = !state.mathHelper;
+      elHelperLabel.textContent = state.mathHelper ? 'ON' : 'OFF';
+      elBtnHelper.style.backgroundColor = state.mathHelper ? '#4ECDC4' : '#E5E7EB';
+      sfx.playPop(0.6);
+      updateStackUI(false);
+    });
+
+    elBtnSound.addEventListener('click', () => {
+      const isMuted = sfx.toggleMute();
+      elBtnSound.textContent = isMuted ? '🔇' : '🔊';
+      if (!isMuted) sfx.playPop(0.7);
+    });
+
+    // Initialize Game on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadOrder(0);
+    });
+  </script>
+</body>
+</html>

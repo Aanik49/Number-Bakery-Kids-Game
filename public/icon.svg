@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgSky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="coralRay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF7A90"/>
+      <stop offset="100%" stop-color="#F43F5E"/>
+    </linearGradient>
+    <linearGradient id="trayCyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#67E8F9"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="cookieGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="icingBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7DD3FC"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <filter id="paperShadow" x="-15%" y="-15%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.28"/>
+    </filter>
+    <filter id="neonGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#22D3EE" flood-opacity="0.85"/>
+    </filter>
+    <clipPath id="roundedSquircle">
+      <rect x="24" y="24" width="464" height="464" rx="112"/>
+    </clipPath>
+  </defs>
+
+  <rect x="12" y="12" width="488" height="488" rx="122" fill="#FFFFFF"/>
+
+  <g clip-path="url(#roundedSquircle)">
+    <rect x="24" y="24" width="464" height="464" fill="url(#bgSky)"/>
+    <g fill="url(#coralRay)">
+      <polygon points="256,256 120,0 230,0"/>
+      <polygon points="256,256 360,0 480,40"/>
+      <polygon points="256,256 512,180 512,310"/>
+      <polygon points="256,256 440,512 310,512"/>
+      <polygon points="256,256 190,512 60,512"/>
+      <polygon points="256,256 0,340 0,200"/>
+    </g>
+    <circle cx="256" cy="260" r="175" fill="#FEF08A" opacity="0.32"/>
+  </g>
+
+  <g filter="url(#neonGlow)">
+    <rect x="74" y="330" width="364" height="86" rx="34" fill="url(#trayCyan)" stroke="#CFFAFE" stroke-width="8"/>
+    <rect x="98" y="346" width="316" height="48" rx="22" fill="#0891B2" opacity="0.25"/>
+  </g>
+
+  <g filter="url(#paperShadow)" font-family="Fredoka, Arial Rounded MT Bold, sans-serif" font-weight="700" text-anchor="middle">
+    <g transform="translate(132, 168) rotate(-12)">
+      <text x="0" y="0" font-size="94" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="24" stroke-linejoin="round">2</text>
+      <text x="0" y="0" font-size="94" fill="#FACC15" stroke="#B45309" stroke-width="4">2</text>
+    </g>
+    <g transform="translate(254, 154) rotate(2)">
+      <text x="0" y="0" font-size="96" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="24" stroke-linejoin="round">5</text>
+      <text x="0" y="0" font-size="96" fill="#FB923C" stroke="#C2410C" stroke-width="4">5</text>
+    </g>
+    <g transform="translate(372, 174) rotate(10)">
+      <text x="0" y="0" font-size="88" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="24" stroke-linejoin="round">10</text>
+      <text x="0" y="0" font-size="88" fill="#A855F7" stroke="#6B21A8" stroke-width="4">10</text>
+    </g>
+  </g>
+
+  <g transform="translate(174, 290)" filter="url(#paperShadow)">
+    <circle cx="0" cy="0" r="88" fill="#FFFFFF"/>
+    <circle cx="0" cy="0" r="76" fill="url(#cookieGold)"/>
+    <circle cx="-42" cy="-34" r="11" fill="#5C2D16"/>
+    <circle cx="38" cy="-38" r="10" fill="#5C2D16"/>
+    <circle cx="-50" cy="18" r="9" fill="#5C2D16"/>
+    <circle cx="48" cy="24" r="10" fill="#5C2D16"/>
+    <circle cx="-8" cy="52" r="9" fill="#5C2D16"/>
+    <circle cx="8" cy="-54" r="8" fill="#5C2D16"/>
+    <path d="M-30,-4 Q-22,-16 -14,-4" fill="none" stroke="#3B1D0E" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M14,-4 Q22,-16 30,-4" fill="none" stroke="#3B1D0E" stroke-width="6.5" stroke-linecap="round"/>
+    <ellipse cx="-36" cy="12" rx="10" ry="6" fill="#FB7185" opacity="0.8"/>
+    <ellipse cx="36" cy="12" rx="10" ry="6" fill="#FB7185" opacity="0.8"/>
+    <path d="M-14,10 Q0,28 14,10 Z" fill="#E11D48"/>
+  </g>
+
+  <g transform="translate(334, 282)" filter="url(#paperShadow)">
+    <path d="M-76,4 Q-82,-54 -36,-66 Q-20,-96 0,-96 Q24,-96 40,-66 Q82,-54 74,4 L58,86 Q0,98 -58,86 Z" fill="#FFFFFF"/>
+    <polygon points="-58,12 58,12 46,78 -46,78" fill="#FDBA74"/>
+    <polygon points="-36,12 -14,12 -10,78 -28,78" fill="#FB923C"/>
+    <polygon points="14,12 36,12 28,78 10,78" fill="#FB923C"/>
+    <ellipse cx="0" cy="-12" rx="64" ry="30" fill="url(#icingBlue)"/>
+    <ellipse cx="0" cy="-38" rx="46" ry="24" fill="#38BDF8"/>
+    <circle cx="0" cy="-64" r="18" fill="#E11D48"/>
+    <path d="M4,-80 Q14,-96 24,-92" fill="none" stroke="#16A34A" stroke-width="6" stroke-linecap="round"/>
+    <rect x="-34" y="-22" width="14" height="5" rx="2.5" fill="#FDE047" transform="rotate(-20 -34 -22)"/>
+    <rect x="20" y="-24" width="14" height="5" rx="2.5" fill="#F472B6" transform="rotate(24 20 -24)"/>
+    <rect x="-8" y="-44" width="14" height="5" rx="2.5" fill="#FFFFFF" transform="rotate(12 -8 -44)"/>
+    <circle cx="-20" cy="40" r="6" fill="#3B1D0E"/>
+    <circle cx="20" cy="40" r="6" fill="#3B1D0E"/>
+    <circle cx="-32" cy="50" r="6" fill="#FB7185" opacity="0.75"/>
+    <circle cx="32" cy="50" r="6" fill="#FB7185" opacity="0.75"/>
+    <path d="M-8,48 Q0,58 8,48" fill="none" stroke="#3B1D0E" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>
